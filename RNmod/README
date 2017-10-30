@@ -1,0 +1,9 @@
+reseau.py  : xor dur, mou !
+
+putain.py  : python3 codes merveille 
+putain3.py : python3 codes merveille ( variante taux d'apprentissage il n'y a plus de sigmoide sur le vecteur d'output)
+
+pm.py      : pm (python merveille) + mnist
+
+mnist.py   : module de lecture de la base données MNIST 
+            les fichiers binaires sont en durs! en local

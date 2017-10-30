@@ -1,0 +1,11 @@
+============================================================
+voila le super héro XOR !!!
+============================================================
+mou (False, False) 0.486263047854
+dur (False, False) False
+mou (False, True) 0.47547568138
+dur (False, True) True
+mou (True, False) 0.472586316038
+dur (True, False) True
+mou (True, True) 0.472551549455
+dur (True, True) False
