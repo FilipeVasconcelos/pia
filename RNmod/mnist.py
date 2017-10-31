@@ -1,6 +1,8 @@
 import os
 import struct
 import numpy as np
+from matplotlib import pyplot
+import matplotlib as mpl
 
 """
 Loosely inspired by http://abel.ee.ucla.edu/cvxopt/_downloads/mnist.py
@@ -42,8 +44,6 @@ def show(image):
     """
     Render a given numpy.uint8 2D array of pixel data.
     """
-    from matplotlib import pyplot
-    import matplotlib as mpl
     fig = pyplot.figure()
     ax = fig.add_subplot(1,1,1)
     imgplot = ax.imshow(image, cmap=mpl.cm.Greys)
