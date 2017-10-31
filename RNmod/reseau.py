@@ -1,163 +1,114 @@
 #-*- coding: utf-8 -*-
 
 import sys
+import random
 import numpy as np
+import inspect
 
-class Reseau():
+import activation
 
-    def __init__( self, nombre_de_couches_cachees, dimension_entree, dimension_sortie ):
+float_formatter = lambda x: "%12.8f" % x
 
-        self.nombre_de_couches_cachees = nombre_de_couches_cachees
-        self.dimension_entree          = dimension_entree
-        self.dimension_sortie          = dimension_sortie
+class MCP():
 
-# ===========================================================================
-def xor_dur(entree1,entree2):
-    
-    yi = np.array( [ 0., 0.] )
-    if entree1: yi[0]=1.
-    if entree2: yi[1]=1.
-    #print( yi )
-    wij = np.array( [ [  1., 1.], 
-                      [ -1., -1.] ] )
-    bi  = np.array( [ 0.5, -1.5 ] ) 
-    oi  = np.array( [ 1.0,  1.0 ] ) 
-    bz  = 1.5
-    ai  = wij.dot(yi) 
-    #print( ai )
-    z = 0.
-    for a,b,o in zip(ai,bi,oi):
-        if a > b:
-            z += o
-    if z > bz :
-        return True 
-    else:
-        return False
+    """
+    ======================================================================
+    Multi-Couches Perceptron:
+    cette classe est un exemple d'implémentation d'un réseau de neurones 
+    "feedforward" à apprentissage profond.
+    Ce code est destiné à l'enseignement de la mineure :
+    "Initiation à l'intelligence artificiel" 
+    pour les INGE1 de l'ESME Sudria Lille.
+    date 31/10/17
+    ======================================================================
+    auteurs : - G. Roux        (enseignant des mathématiques/informatique)
+              - F. Vasconcelos (enseignant de SI/informatique)
+    ======================================================================
+    """
 
-# ===========================================================================
-def xor_mou(entree1,entree2):
+    #======================================================================
+    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0):
 
-    nombre_de_couches = 2
-    yi  = np.zeros( (1,2) , dtype=float )
-    if entree1: yi[0,0]=1.
-    if entree2: yi[0,1]=1.
+        self.neurones                  = neurones
+        self.nombre_de_couches_cachees = len(neurones) - 1
+        self.dimension_couches_cachees = neurones[1:-1]
+        self.dimension_entree          = neurones[0] 
+        self.dimension_sortie          = neurones[-1] 
+        self.sigma_distnormale         = sigma
+        self.mu_distnormale            = mu  
+        self.biais                     = [np.random.randn(y, 1) * sigma + mu for y in neurones[1:]]
+        self.poids                     = [np.random.randn(y, x) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
+        self.str_sep                   = 20*"+---" 
 
-    key =  "s"
-#    key =  "h"
-                           
-    #wij = np.array( [[  [  1., -1.]  ,  #w^(1)_{11} w^(1)_{12}
-    #                    [ -1.,  1.] ],  #w^(1)_{21} w^(1)_{22}
-    #                  [ [  1.,  1.]  ,  #w^(2)_{11} w^(2)_{12}
-     #                   [  0.,  0.] ]] )#w^(2)_{21} w^(2)_{22}      
-     
-    wij = np.array( [ [[ 2.12096563,  6.46646883],
-                       [ 2.12093506,  6.46457309]],
-                      [[ -1.04650633e+01,   6.39975485e-20],
-                       [  1.03550243e+01,  -5.96282777e-20]] ] )
+    #======================================================================
+    def get_tailles(self):
+        return len(self.poids), len(self.biais)
 
-    if key == "s" :
-        bi  = np.array(    [[  0. ,  0.]  ,
-                            [  0. ,  0.]]   ) 
-    elif key == "h":
-        bi  = np.array(    [[  0.,  0.]  ,
-                            [  0.,  0.]]   ) 
-    elif key == "t":
-        bi  = np.array(    [[  0.,  0.]  ,
-                            [ -0.76159416, 0.76159416]]   ) 
-#    print( bi[0,:] )
-    #bi  = np.zeros((2,2),dtype=float)
+    #======================================================================
+    def afficher_poids(self):
+        print("poids")
+        print("c n     w")
+        print(self.str_sep) 
+        np.set_printoptions(precision=6,formatter={'float_kind':float_formatter})
+        for i,w in enumerate(self.poids):
+            for j,wi in enumerate(w) :
+                print(i,j,"\n", np.array_str(wi, precision=6, max_line_width=75) )
+            print(self.str_sep) 
+    #======================================================================
+    def afficher_biais(self):
+        print("biais")
+        print("c n     b")
+        print(self.str_sep) 
+        for i,b in enumerate(self.biais):
+            for j,bi in enumerate(b):
+                print(i,j,bi)
+            print(self.str_sep) 
+    #======================================================================
+    def __str__( self ):
+        return "MCPerceptron: Struct: {} Dimension: {}".format(len(self.neurones),self.neurones)
+    #======================================================================
+    def gradient_descent(self, apprentissage, iterations, taux_apprentissage, evaluation=[]):
 
-    verbeux = 1
+        for pas in range(iterations):
+            random.shuffle( apprentissage )
+            
 
-    ai  = np.zeros((nombre_de_couches,2),dtype=float)
-#    print(ai[:,0],yi[0,:])     
-    for k in range( nombre_de_couches ) :
-        if key  == "s" :
-            ai[k,:]  = sigmoide  ( np.dot(yi[0,:],wij[k,:,:])  - bi[k,:] )
-        elif key == "h":
-            ai[k,:]  = activation_heaviside ( wij[k,:,:].dot(yi[0,:])  - bi[k,:] )
-        elif key == "t":
-            ai[k,:]  = activation_tanh      ( wij[k,:,:].dot(yi[0,:])  - bi[k,:] )
-        if verbeux > 10 :
-            print(30*"=")
-            print("k =",k)
-            print(30*"=")
-            print("yi", yi[0,:] )
-            print()
-            print("bi", bi[k,:] )
-            print()
-            print("wij", wij[k,:,:]  )
-            print()
-            print("wij . yi"              , wij[k,:,:].dot(yi[0,:])                     )
-            print("wij . yi - bi"         , wij[k,:,:].dot(yi[0,:]) - bi[k,:]           )
-            if key  == "s" :
-                print("phi ( wij . yi - bi ) ", sigmoide ( wij[k,:,:].dot(yi[0,:]) - bi[k,:] ) )
-            elif key  == "h" :
-                print("phi ( wij . yi - bi ) ", activation_heaviside ( wij[k,:,:].dot(yi[0,:]) - bi[k,:] ) )
-            elif key  == "t" :
-                print("phi ( wij . yi - bi ) ", activation_tanh ( wij[k,:,:].dot(yi[0,:]) - bi[k,:] ) )
-            print()
-            print("ai",ai[k,:])
-            print()
-        yi[0,:]  = ai[k,:]
-        
-
-    return yi[0,0]
-
-# ===========================================================================
-def activation_heaviside(vecteur) :
-
-    for i,e in enumerate(vecteur):
-        if e > 0. :
-            vecteur[i] = 1. 
-        else:
-            vecteur[i] = 0.
-
-    return vecteur
-# ===========================================================================
-def activation_sigmoide(vecteur):
-
-    for i,e in enumerate(vecteur):
-        vecteur[i] = 1./(1+np.exp(-e))
-
-    return vecteur
-
-def sigmoide(x):
-    return 1./(1+np.exp(-x))
-
-# ===========================================================================
-def activation_tanh(vecteur):
-
-    for i,e in enumerate(vecteur):
-        vecteur[i] = np.tanh(e)
-
-    return vecteur
-
+    #======================================================================
 
 if __name__ == "__main__" :
 
-    print(60*"=")
-    print("voila le super héro XOR !!!")
-    print(60*"=")
+    nn  = [2,3,1]
 
-    #ncc = 2
-    #de  = 5
-    #ds  = 3
+    RN = MCP(nn)
+    #print( inspect.getdoc(RN) )
+    print(RN)
 
-    entrees  = [ ( False, False ) , 
-                 ( False, True  ) , 
-                 ( True , False ) , 
-                 ( True , True  ) ]
-    for entree in entrees :
-        print ( "mou",entree, xor_mou( entree[0], entree[1] ) )
-        print ( "dur",entree, xor_dur( entree[0], entree[1] ) )
-#    print ( xor_dur( True, False )  )
-#    print ( xor_mou( True, False )  ) 
+    print ( RN.get_tailles() )
+    RN.afficher_poids() 
+    RN.afficher_biais() 
 
+    entree = [ [ 0., 0. ] , 
+               [ 0., 1. ] , 
+               [ 1., 0. ] , 
+               [ 1., 1. ] ]
 
+    sortie = [ [ 0. ] ,
+               [ 1. ] ,
+               [ 1. ] ,
+               [ 0. ] ]
+    apprentissage = (entree,sortie)
+   
+    
+    entree = [ [ 0., 0. ] , 
+               [ 1., 0. ] ]
 
+    sortie = [ [ 0. ] ,
+               [ 1. ] ]
+    evaluation = entree,sortie
 
+    print( apprentissage[0] ) 
 
+    RN.gradient_descent( apprentissage, 6000, 1., evaluation )
 
 
 
