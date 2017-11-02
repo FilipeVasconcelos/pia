@@ -1,0 +1,550 @@
+#+LANGUAGE: fr
+#+LATEX_HEADER: \usepackage[]{babel}
+#+HTML_DOCTYPE: html5
+#+OPTIONS: ^:{}
+# +HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
+# +OPTIONS: html-style:nil
+
+# +PROPERTY: header-args :eval no
+
+#+AUTHOR: F. Vasconcelos, G. Roux
+#+TITLE: Introduction à l'intelligence artificielle
+
+* Prérequis mathématiques et equivalant en Python
+
+Le package Numpy est indispensable pour manipuler convenablement les vecteurs
+et les matrices.
+
+** Déclaration d'un vecteur, d'une matrice
+
+#+NAME: bases_1
+#+BEGIN_SRC python :session bases :exports both :results output
+import numpy as np
+X = np.array([[0,0],[0,1],[1,0],[1,1]])
+print(X)
+
+#+END_SRC
+
+Ce qui produit la sortie:
+
+#+RESULTS: bases_1
+
+Observons tout de suite la syntaxe pour transposer une matrice:
+
+#+NAME: bases_2
+#+BEGIN_SRC python :session bases :exports both :results output
+print(X.T)
+#+END_SRC
+
+Ce qui produit la sortie:
+
+#+RESULTS: bases_2
+
+** Le produit matriciel grâce à la fonction dot:
+
+#+NAME: bases_3
+#+BEGIN_SRC python :session bases :exports both :results output
+L = np.array([ [10, 20, 30, 40] ])
+C = np.array([ [2, 4, 6, 8] ]).T
+print("L =", L)
+print("C =", C)
+print("L.C =", np.dot(L, C))
+print("C.L =", np.dot(C, L))
+#+END_SRC
+
+Sortie:
+
+#+RESULTS: bases_3
+
+** Génération aléatoire de matrices
+
+#+NAME: bases_4
+#+BEGIN_SRC python :session bases :exports both :results output
+A = np.random.uniform(size=(2, 5))
+B = np.random.uniform(size=(3, 1))
+
+print(A)
+print(B)
+#+END_SRC
+
+Sortie:
+
+#+RESULTS: bases_4
+
+** Produit de Hadamard
+
+*Définition*
+
+Soient $A=\begin{pmatrix}a_{ij}\end{pmatrix}$ et
+$B=\begin{pmatrix}b_{ij}\end{pmatrix}$ deux matrices de même dimension. L
+produit de Hadamard de $A$ et de $B$, noté $A\times B$ est défini par:
+
+\begin{equation}
+A\times B := \begin{pmatrix}a_{ij}b_{ij}\end{pmatrix}
+\end{equation}
+
+#+NAME: bases_5
+#+BEGIN_SRC python :session bases :exports both :results output
+A = np.cumsum(np.ones((2, 5)), axis = 1)
+B = 2 * np.ones((1, 5))
+
+print(A)
+print(B)
+
+print(A * B)
+#+END_SRC
+
+Sortie:
+
+#+RESULTS: bases_5
+
+
+* Un premier exemple de réseau de neurones
+
+** Terminologie
+
+*Notation*
+
+Soit $\sigma$ une fonction définie sur $\mathbb{R}$ et
+$M=\begin{pmatrix}m_{ij}
+\end{pmatrix}_{\substack{1\leq i\leq n\\1\leq j\leq p }}$ une matrice à
+coefficients réels. On notera $\sigma(M)$ la matrice définie par:
+
+\begin{equation}
+\sigma(M):=\begin{pmatrix}
+\sigma(m_{ij})
+\end{pmatrix}_{\substack{1\leq i\leq n\\1\leq j\leq p }}
+\end{equation}
+
+*Définition*
+
+Soit $N$ un entier naturel. On appelle réseau de neurones à $N$ couches toute
+suite finie de couples $(W^{(1)},\sigma^{(1)})$, $(W^{(2)},\sigma^{(2)})$, ...,
+$(W^{(N)},\sigma^{(N)})$, telle que:
+
+1. $W^{(n)}\in\mathcal{M}_{m_{j+1}m_{j}}(\mathbb(R)$, où $m_{0}$, ..., $m_N$ est
+  une suite d'entiers positifs, où $\mathcal{M}_{np}(\mathbb(R))$ désigne
+  l'ensemble des matrices à coefficients réels à $n$ lignes et $p$ colonnes.
+2. $\sigma^{(n)}$ est une fonction définie (et dérivable) sur $\mathbb{R}$
+
+$n_{i}$ est la taille de la $i^{eme}$ couche du réseau.
+
+L'entrée du réseau est la colonne notée
+$X^{(0)}\in\mathcal{M}_{n_{0},1}(\mathbb{R})$. On définit par récurrence la
+suite $X^{(1)}$, ..., $X^{(N)}$ des entrées des neurones ainsi que la suite
+$Y^{(0)}$, ..., $Y^{(N)}$ des sorties des neurones par:
+
+\begin{equation}
+\begin{cases}
+Y^{(0)}=X^{(0)}\\
+\forall n\in \left\{1,...,N\right\}, X^{(n)}=W^{(n)}Y^{(n-1)}\\
+\forall n\in \left\{1,...,N\right\}, Y^{(n)}=\sigma^{n}(X^{(n)})
+\end{cases}
+\end{equation}
+
+Si $X^{(0)}$ est l'entrée du réseau de neurones, on appelle sortie la matrice la
+matrice $Y^{(N)}$.
+
+** Expression de l'erreur
+
+*Définition*
+
+Notons $T\in\mathcal{M}_{m_{N},1}(\mathbb{R})$ la sortie théorique du réseau. On
+appelle erreur commise par le réseau, et on la note $E$, le nombre défini par:
+
+\begin{equation}
+E:=\frac{1}{2}\sum_{i=1}^{m_{N}}(T_{i}-Y_{i}^{(N)})^{2}
+\end{equation}
+
+*Remarque:*
+
+$Y^{(N)}$ est une fonction (dérivable si les $\sigma^{(n)}$ le sont) des
+$m_{1}\times m_{0}+\dots+m_{N}\times m_{N-1}$ variables
+$\left\{w_{ij}^{(n)}\right\}$.
+
+** Calcul des dérivées partielle de l'erreur
+
+*** Par rapport aux coefficients de la dernière matrice
+
+On calcule ici les dérivées partielles du type
+$\frac{\partial E}{\partial w_{ij}^{(N)}}$.
+
+\begin{align}
+\frac{\partial E}{\partial w_{ij}^{(N)}}
+& = \frac{\partial \frac{1}{2}\sum_{k=1}^{m_{N}}
+(t_{k}-y_{k}^{(N)})^{2}}{\partial w_{ij}^{(N)}}\\
+& = \frac{1}{2}\sum_{i=k}^{m_{N}}
+\frac{\partial (t_{k}-y_{k}^{(k)})^{2}}{\partial w_{ij}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}(t_{k}-t_{k}^{(N)})
+\frac{\partial (t_{k}-y_{k}^{(N)})}{\partial w_{ij}^{(N)}}\\
+& = -\sum_{k=1}^{m_{N}}(t_{k}-y_{k}^{(N)})
+\frac{\partial (\sigma^{(N)}(x_{k}^{(N)}))}{\partial w_{ij}^{(N)}}\\
+& = -(t_{i}-y_{i}^{(N)})
+\frac{\partial (\sigma^{(N)}(x_{i}^{(N)}))}{\partial w_{ij}^{(N)}}\\
+& = -(t_{i}-y_{i}^{(N)})\sigma^{(N)}'(x_{i}^{(N)})
+\frac{\partial (x_{i}^{(N)})}{\partial w_{ij}^{(N)}}\\
+& = -(t_{i}-y_{i}^{(N)})\sigma^{(N)}'(x_{i}^{(N)})
+\frac{\partial (\sum_{k=1}^{n_{N-1}}w_{ik}^{(N)}y_{k}^{(N-1)})}
+{\partial w_{ij}^{(N)}}\\
+& = -(t_{i}-y_{i}^{(N)})\sigma^{(N)}'(x_{i}^{(N)})y_{j}^{(N-1)}\\
+\end{align}
+
+*Remarques:*
+
+La règle de dérivation des fonctions composées donne:
+
+\begin{align}
+\frac{\partial E}{\partial w_{ij}^{(N)}}
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial x_{k}^{(N)}}{\partial w_{ij}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial (\sum_{k=1}^{n_{N-1}}w_{ik}^{(N)}y_{k}^{(N-1)})}
+{\partial w_{ij}^{(N)}}\\
+& = \frac{\partial E}{\partial x_{i}^{(N)}}y_{j}^{(N-1)}
+\end{align}
+
+Cela pousse à definir la grandeur, appelée signal d'erreur du neurone $i$ de la
+$n^{eme}$ couche, le nombre:
+
+\begin{equation}
+\delta_{i}^{(n)}=-\frac{\partial E}{\partial x_{i}^{(n)}}
+\end{equation}
+
+Caculons $\delta_{i}^{(N)}$:
+
+\begin{align}
+\delta_{i}^{(N)}
+& = -\frac{\partial E}{\partial x_{i}^{(N)}}\\
+& = +\sum_{k=1}^{m_{N}}(t_{k}-y_{k}^{(N)})
+\frac{\partial (\sigma^{(N)}(x_{k}^{(N)}))}{\partial x_{i}^{(N)}}\\
+& = +(t_{i}-y_{i}^{(N)})\sigma^{(N)}'(x_{i}^{(N)})
+\end{align}
+
+Cela permet la notation abrégée et généralisable suivante:
+
+\begin{equation}
+\frac{\partial E}{\partial w_{ij}^{(N)}}
+= -\delta_{i}^{(N)}y_{j}^{(N-1)}
+\end{equation}
+
+*** Par rapport aux coefficients des matrices des couches cachées
+
+Calculons $\delta_{i}^{n}$ pour $n<N$:
+
+\begin{align}
+\delta_{i}^{(n)}
+& = -\frac{\partial E}{\partial x_{i}^{(n)}}\\
+& = +\sum_{k=1}^{m_{N}}(t_{k}-y_{k}^{(n)})
+\frac{\partial (\sigma^{(N)}(x_{k}^{(N)}))}{\partial x_{i}^{n}}\\
+& = +\sum_{k=1}^{m_{N}}(t_{k}-y_{k}^{(n)})
+\sum_{l=1}^{m_{n+1}}
+\frac{\partial \left(\sigma^{(N)}(x_{l}^{(N)})\right)}
+{\partial x_{l}^{n+1}}
+\frac{\partial x_{l}^{n+1}}{\partial x_{i}^{(n)}}\\
+& = \sum_{l=1}^{m_{n+1}}\left(\sum_{k=1}^{m_{N}}(t_{k}-y_{k}^{(n)})
+\frac{\partial \left(\sigma^{(N)}(x_{l}^{(N)})\right)}
+{\partial x_{l}^{(n+1)}}\right)
+\frac{\partial x_{l}^{(n+1)}}{\partial x_{i}^{(n)}}\\
+& = \sum_{l=1}^{m_{n+1}}\delta_{l}^{(n+1)}
+\frac{\partial x_{l}^{(n+1)}}{\partial x_{i}^{(n)}}\\
+& = \sum_{l=1}^{m_{n+1}}\delta_{l}^{(n+1)}
+\frac{\partial \left(\sum_{k=1}^{m_{n}}w_{lk}^{(n+1)}y_{k}^{(n)}
+\right)}{\partial x_{i}^{(n)}}\\
+& = \sum_{l=1}^{m_{n+1}}\delta_{l}^{(n+1)}
+\frac{\partial \left(\sum_{k=1}^{m_{n}}w_{lk}^{(n+1)}
+\sigma^{(n)}(x_{k}^{(n)})
+\right)}{\partial x_{i}^{(n)}}\\
+& = \sum_{l=1}^{m_{n+1}}w_{li}^{n+1}\delta_{l}^{(n+1)}\sigma^{(n)}'(x_{i}^{(n)})\\
+& = \sigma^{(n)}'(x_{i}^{(n)})\sum_{l=1}^{m_{n+1}}w_{li}^{n+1}\delta_{l}^{(n+1)}
+\end{align}
+
+La relation ci-dessus est très importante dans la propagation de l'erreur.
+
+Calculons $\frac{\partial E}{\partial w_{ij}^{(n)}}$:
+
+\begin{align}
+\frac{\partial E}{\partial w_{ij}^{(n)}}
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial x_{k}^{(n)}}{\partial w_{ij}^{(n)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial (\sum_{k=1}^{n_{n-1}}w_{ik}^{(n)}y_{k}^{(n-1)})}
+{\partial w_{ij}^{(n)}}\\
+& = \frac{\partial E}{\partial x_{i}^{(n)}}y_{j}^{(n-1)}\\
+& = -\delta_{i}^{(n)}y_{j}^{(n-1)}
+\end{align}
+
+* Mise à jour des matrices de poids - Rétropropagation
+
+On chercha à trouver les coefficients $\left\{w_{ij}^{(n)}\right\}$ qui minimise
+l'erreur. On sait l'erreur $E$ diminue le plus rapidement dans la direction
+donnée par l'opposé de son gradient.
+
+Autrement dit, à chaque $w_{ij}^{(n)$ on va ajouter
+$dw_{ij}^{(n)}=\delta_{i}^{(n)}y_{j}^{(n-1)}$.
+
+** Récapitulatif des formules en vue de l'implémentation
+
+Les formules suivantes peuvent être implémentées quasiment telles quelles:
+
+*** Version entrée en colonne
+
+On note: $\delta^{(n)} = \begin{pmatrix}\delta_{1}^{(n)}\\
+\delta_{2}^{(n)}\\\dots\\\delta_{m_{n}}^{(n)}\end{pmatrix}$, $L_{i}^{(n)}$ la
+$i^{eme}$ de $W^{(n)}$ et $C_{j}^{(n)}$ sa $j^{eme}$ colonne.
+
+*Dernière couche*
+
+1. $\delta_{i}^{(N)} = \sigma^{(N)}'(x_{i}^{(N)})(t_{i}-y_{i}^{(N)})$
+2. $dw_{ij}^{(N)}=\sigma^{(N)}'(x_{i}^{(N)})(t_{i}-y_{i}^{(N)})y_{j}^{(N-1)}$.
+
+*Couche intermédiaire*
+
+1. 
+   \begin{align}
+   \delta_{i}^{(n)}&=\sigma^{(n)}'(x_{i}^{(n)})
+   \sum_{l=1}^{m_{n+1}}w_{li}^{(n+1)}\delta_{l}^{(n+1)}\\&=
+   \sigma^{(n)}'(x_{i}^{(n)})^{t}C_{i}^{(n+1)}.\delta^{(n+1)}
+   \end{align}
+2. 
+   \begin{align}
+   dw_{ij}^{(n)}&=-\sigma^{(n)}'(x_{i}^{(n)})
+   \sum_{l=1}^{m_{n+1}}w_{li}^{(n+1)}\delta_{l}^{(n+1)}y_{j}^{(n-1)}\\&=
+   \sigma^{(n)}'(x_{i}^{(n)})^{t}C_{i}^{(n+1)}.\delta^{(n+1)}y_{j}^{(n-1)}
+   \end{align}
+
+*Première couche*
+
+1. 
+   \begin{align}
+   \delta_{i}^{(1)}&=\sigma^{(1)}'(x_{i}^{(1)})
+   \sum_{l=1}^{m_{2}}w_{li}^{(2)}\delta_{l}^{(2)}\\&=
+   \sigma^{(1)}'(x_{i}^{(1)})^{t}C_{i}^{(2)}.\delta^{(2)}
+   \end{align}
+2. 
+   \begin{align}
+   dw_{ij}^{(1)}&=-\sigma^{(1)}'(x_{i}^{(1)})
+   \sum_{l=1}^{m_{2}}w_{li}^{(2)}\delta_{l}^{(2)}x_{j}^{(0)}\\&=
+   \sigma^{(1)}'(x_{i}^{(1)})^{t}C_{i}^{(2)}.\delta^{(2)}x_{j}^{(0)}
+   \end{align}
+   
+*** Version transposée
+
+Il peut être préférable de considéer l'entrée et les différentes couches du
+réseau comme des lignes plutôt que comme des colonnes. Il suffit pour cela de
+transposer toutes les matrices dans ce qui a été fait précedemment. On note alors
+que le produit à gauche devient un produit à droite, pour passer d'une couche à la
+suivante.
+
+Les formules ci-dessus deviennent alors:
+
+*Dernière couche*
+
+1. $\delta_{j}^{(N)} = \sigma^{(N)}'(x_{j}^{(N)})(t_{j}-y_{j}^{(N)})$
+2. $dw_{ij}^{(N)}=\sigma^{(N)}'(x_{j}^{(N)})(t_{j}-y_{j}^{(N)})y_{i}^{(N-1)}$.
+
+*Couche intermédiaire*
+
+1. $\delta_{j}^{(n)}=\sigma^{(n)}'(x_{j}^{(n)})
+  \sum_{l=1}^{p_{n+1}}w_{jl}^{(n+1)}\delta_{l}^{(n+1)}=
+  \sigma^{(n)}'(x_{j}^{(n)})\delta^{(n)}.^{t}L_{j}^{(n)}$
+2. $dw_{ij}^{(n)}=\sigma^{(n)}'(x_{j}^{(n)})
+  \sum_{l=1}^{p_{n+1}}w_{jl}^{(n+1)}^{t}\delta_{l}^{(n+1)}y_{i}^{(n-1)}=
+  \sigma^{(n)}'(x_{j}^{(n)})\delta^{(n+1)}.^{t}L_{j}^{(n+1)}y_{i}^{(n-1)}$.
+
+*Première couche*
+
+1. $\delta_{j}^{(1)}=\sigma^{(1)}'(x_{j}^{(1)})
+  \sum_{l=1}^{p_{2}}w_{jl}^{(21)}\delta_{l}^{(2)}=
+  \sigma^{(1)}'(x_{i}^{(1)})\delta^{(1)}.^{t}L_{j}^{(1)}$
+2. $dw_{ij}^{(1)}=\sigma^{(1)}'(x_{j}^{(1)})
+  \sum_{l=1}^{p_{2}}w_{jl}^{(2)}\delta_{l}^{(2)}x_{i}^{(0)}=
+  \sigma^{(1)}'(x_{i}^{(1)})\delta^{(2)}.^{t}L_{j}^{(2)}x_{i}^{(0)}$.
+
+On peut exprimer cela matriciellement:
+
+*Dernière couche*
+
+1. $\delta^{(N)}=\sigma^{(N)}'(X^{(N)})\times(T-Y^{(N)})$
+2. $dw^{(N)}=^{t}Y^{(N-1)}.\delta^{(N)}$
+
+*Couche intermédiaire*
+
+1. $\delta^{(n)}=\sigma^{(n)}'(X^{(N)})\times (\delta^{(n+1)}.^{t}W^{(n+1)})$
+2. $dw^{(n)}=^{t}Y^{(n-1)}.\delta^{(n)}$
+
+*Première couche*
+
+1. $\delta^{(1)}=\sigma^{(1)}'(X^{(N)})\times (\delta^{(2)}.^{t}W^{(2)})$
+2. $dw^{(1)}=^{t}X^{(0)}.\delta^{(1)}$
+
+*** Remarques
+
+Le vecteur $\delta^{(n)}$ est l'opposé du gradient de l'erreur $E$, lorsque cette
+dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
+
+\begin{equation}
+\delta^{(n)} = - \nabla \left(E(x_{1}^{(n)},\dots,x_{m_{n}}^{(n)})\right)
+\end{equation}
+
+* Exemple
+
+** Les mathématiques
+
+On va utiliser la version transposée avec le cas suivant:
++ $N=2$
++ $\sigma^{n}=\sigma$
++ $(n_{1}, n_{0})=(3,2)$ donc $W^{(1)}\in\mathcal{M}_{2,3}(\mathbb{R})$
++ $(n_{2}, n_{1})=(1,3)$ donc $W^{(2)}\in\mathcal{M}_{3,1}(\mathbb{R})$
++ $X_{0}$ prendra successivement pour valeurs:
+  + $(0,0)$
+  + $(0,1)$
+  + $(1,0)$
+  + $(1,1)$
++ $T$ prendra successivement pour valeurs:
+  + $0$
+  + $1$
+  + $1$
+  + $0$
+
+On obtient:
+
+1. $\delta^{(2)}=\sigma^{(2)}'(X^{(2)})\times(T-Y^{(2)})$
+2. $\delta^{(1)}=\sigma^{(1)}'(X^{(2)})\times (\delta^{(2)}.^{t}W^{(2)})$
+
+
+1. $dw^{(2)}=-^{t}Y^{(1)}.\delta^{(2)}$
+2. $dw^{(1)}=-^{t}X^{(0)}.\delta^{(1)}$
+
+
+*Remarque:*
+
+\begin{align}
+\sigma'(X^{(n)}) & = \sigma(X^{(n)})(1-\sigma(X^{(n)}))\\
+                     & = Y^{(n)}(1-Y^{(n)})\\
+                     & = \sigma\_(Y^{(n)})
+\end{align}
+
+** Implémentations en python
+
+*** Version basique
+
+#+BEGIN_SRC python :exports both :results output :tangle xor_basique.py
+
+# coding: utf-8
+# XOR basique
+import numpy as np
+ 
+iterations = 6000                # Nombre d'itérations
+
+tailleX0, tailleX1, tailleX2 = 2, 3, 1
+ 
+X0 = np.array([[0,0], [0,1], [1,0], [1,1]])
+T = np.array([ [0],   [1],   [1],   [0]])
+ 
+def sigmoide (x):
+    return 1/(1 + np.exp(-x))    # fonction d'activation
+def sigmoide_(x):
+    return x * (1 - x)           # dérivée de la fonction d'activation
+
+# Poids
+W1 = np.random.uniform(size=(tailleX0, tailleX1))
+W2 = np.random.uniform(size=(tailleX1,tailleX2))
+
+for i in range(iterations):
+ 
+    X1 = np.dot(X0, W1)                 # entrée couche 1
+    Y1 = sigmoide(X1)                   # activation couche 1
+    X2 = np.dot(Y1, W2)                 # entrée couche 2
+    Y2 = sigmoide(X2)                   # activation couche 2
+
+    E = T - Y2                          # erreur
+
+    d2 = sigmoide_(Y2) * E              # d2  
+    d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
+
+    dW1 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
+    dW2 = X0.T.dot(d1)                  # somme sur les entrées des dW2
+
+    W2 += dW1                           # mise à jour des poides de la couche 2
+    W1 += dW2                           # et des poids de la couche 1
+     
+print(Y2)
+#+END_SRC
+
+*** Version améliorée
+
+Le but de l'amélioration qui va suivre est d'écrire des fonctions réutilisables
+pour résoudre des problèmes plus compliqués.
+
+#+BEGIN_SRC python :exports both :results output :tangle xor.py
+
+# coding: utf-8
+# XOR amélioré
+import numpy as np
+ 
+iterations = 6000                # Nombre d'itérations
+
+tailleX0, tailleX1, tailleX2 = 2, 3, 1
+ 
+X0 = np.array([[0,0], [0,1], [1,0], [1,1]])
+T = np.array([ [0],   [1],   [1],   [0]])
+ 
+def sigmoide (x):
+    return 1/(1 + np.exp(-x))    # fonction d'activation
+def sigmoide_(x):
+    return x * (1 - x)           # dérivée de la fonction d'activation
+
+# Poids
+W1 = np.random.uniform(size=(tailleX0, tailleX1))
+W2 = np.random.uniform(size=(tailleX1,tailleX2))
+
+def traiter(X0):
+    X1 = np.dot(X0, W1)                 # entrée couche 1
+    Y1 = sigmoide(X1)                   # activation couche 1
+    X2 = np.dot(Y1, W2)                 # entrée couche 2
+    Y2 = sigmoide(X2)                   # activation couche 2
+    return Y1, Y2
+
+for i in range(iterations):
+    Y1, Y2 = traiter(X0)
+ 
+    E = T - Y2                          # erreur
+
+    d2 = sigmoide_(Y2) * E              # d2  
+    d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
+
+    dW1 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
+    dW2 = X0.T.dot(d1)                  # somme sur les entrées des dW2
+
+    W2 += dW1                           # mise à jour des poides de la couche 2
+    W1 += dW2                           # et des poids de la couche 1
+     
+print(Y2)
+#+END_SRC
+
+** Le OU exclusif
+
+$W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
+
+** La fonction d'activation: sigmoïde
+
+On considère la fonction $f$ définie sur $\mathbb{R}$ par
+$f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
+
+$f$ est de classe $C^{\infty}$ et on a:
+
+\begin{align}
+f'(x) & = -\frac{-ae^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = a\frac{e^{-ax}}{(1+e^{-ax})^{(2)}}
+\end{align}
+
+On constate que $f$ est solution de l'équation différentielle $y'=ay(1-y)$. En
+effet:
+
+\begin{align}
+f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
+& = \frac{1}{1+e^{-ax}}(\frac{1+e^{-ax}-1}{1+e^{-ax}})\\
+& = \frac{e^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = \frac{1}{a}f'(x)
+\end{align}
+
