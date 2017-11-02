@@ -29,7 +29,7 @@ class MCP():
     """
 
     #======================================================================
-    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0):
+    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None ):
 
         self.neurones                  = neurones
         self.nombre_de_couches         = len(neurones) - 1 
@@ -42,8 +42,15 @@ class MCP():
         self.sigma_distnormale         = sigma
         self.mu_distnormale            = mu  
 
-        self.B                         = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
-        self.W                         = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
+        if not (W or B) :
+            self.B                     = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
+            self.W                     = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
+        else:
+            self.B                     = B
+            self.W                     = W
+            self.nombre_de_couches_cachees = len(W)
+            self.nombre_de_couches = self.nombre_de_couches_cachees + 1 
+
         self.str_sep                   = 20*"+---" 
         self.verbeux                   = verbeux
         self.print_rate                = 1000
@@ -94,9 +101,23 @@ class MCP():
     def gradient_descent(self, apprentissage, iterations, taux_apprentissage, evaluation=[]):
 
         X0, T = self.preparer_donnees(apprentissage)
+        #print(X0)
+        #print(T)
+        if len(evaluation) > 0 :
+            X0, T = self.preparer_donnees(evaluation)
+            print(X0)
+            print(T)
+            #feedforward
+            Y = []
+            Y.append(X0)
+            for k in range( self.nombre_de_couches ) :
+                X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
+                Y.append( sigmoide(X) )                     # activation 
+           
+            print( Y[-1] )
 
-        print(X0)
-        print(T)
+        #print(X0)
+        #print(T)
         #sys.exit()
         for pas in range(iterations):
 
@@ -159,9 +180,10 @@ class MCP():
                 print( dW )
                 print( nabla )
         print (pas,(E**2).sum() )
-        print(Y[-1] )
-        print(self.W)
-        print(self.B)
+        #print(Y[-1] )
+        #print(self.W)
+        #print(self.B)
+        return self.W, self.B 
 #
 #    d3 = sigmoide_(Y3) * E              # d2  
 #    dW3 = Y2.T.dot(d3)                  # somme sur les entrées des dW1
