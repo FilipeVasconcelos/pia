@@ -13,6 +13,7 @@ inspiré de http://abel.ee.ucla.edu/cvxopt/_downloads/mnist.py
 qui est sous licence GPL licensed.
 """
 
+# ===================================================================
 def lire_ds (dataset= "apprentissage", path = "."):
     """
     fonction Python pour importer les données MNIST.
@@ -45,6 +46,7 @@ def lire_ds (dataset= "apprentissage", path = "."):
     for i in range(len(lbl)):
         yield get_img(i)
 
+# ===================================================================
 def charger_donnees(dataset= "apprentissage", path = "." ):
 
     mnist = lire_ds( dataset, path )
@@ -60,6 +62,7 @@ def charger_donnees(dataset= "apprentissage", path = "." ):
             sortie.append( resultat_vecteur ( image[0])           )  
     return entree, sortie
 
+# ===================================================================
 def show(image):
     """
     Render a given numpy.uint8 2D array of pixel data.
@@ -72,6 +75,7 @@ def show(image):
     ax.yaxis.set_ticks_position('left')
     pyplot.show()
 
+# ===================================================================
 def ascii_show(image):
     """
     Ascii render 2D
@@ -82,6 +86,7 @@ def ascii_show(image):
             row += '{0: <3}'.format(x)
         print(row)
 
+# ===================================================================
 def ascii_show_(image):
     """
     Ascii render 1D 
@@ -93,6 +98,7 @@ def ascii_show_(image):
             row = ""    
         row += '{0: <3}'.format(x)
 
+# ===================================================================
 def grayramp_show(image):
     """
     gray render 1D 
@@ -104,6 +110,7 @@ def grayramp_show(image):
 
         print(row)
 
+# ===================================================================
 def grayramp_show_(image):
     """
     gray render 1D 
@@ -114,7 +121,7 @@ def grayramp_show_(image):
         if i%28 == 0 :
             print(row)
 
-
+# ===================================================================
 def resultat_vecteur(e):
     """
     Transforme le label en un vecteur de 10 elements
@@ -123,6 +130,7 @@ def resultat_vecteur(e):
     v[e] = 1.0
     return v
                          
+# ===================================================================
 if __name__ == "__main__" :
 
     mnist = lire_ds()
@@ -135,20 +143,22 @@ if __name__ == "__main__" :
         #show(image[1])
         i+=1
 
-    evaluation_img, evaluation_lbl = charger_donnees()
-    print( len  ( evaluation_img[0] ) , len ( evaluation_lbl[0] )) 
+    donnees = charger_donnees()
+    print ( type( donnees ) ) 
+    imgs, lbls = donnees
+    print( len ( imgs[0] ) , len ( lbls[0] ) ) 
 
     k = 254
-    ascii_show_ ( evaluation_img[k] )
-    print( evaluation_lbl[k] )
+    ascii_show_ ( imgs[k] )
+    print( lbls[k] )
 
     print()
-    grayramp_show_ ( evaluation_img[k] )
+    grayramp_show_ ( imgs[k] )
     print()
     print()
     print()
 
-    for img in evaluation_img:
+    for img in imgs:
         grayramp_show_ (img) 
         time.sleep(0.1)        
 

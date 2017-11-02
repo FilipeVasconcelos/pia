@@ -5,7 +5,8 @@ import random
 import numpy as np
 import inspect
 
-import activation
+from activation import sigmoid, sigmoid_
+#from mnist import * 
 
 float_formatter = lambda x: "%12.8f" % x
 
@@ -30,7 +31,8 @@ class MCP():
     def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0):
 
         self.neurones                  = neurones
-        self.nombre_de_couches_cachees = len(neurones) - 1
+        self.nombre_de_couches         = len(neurones) 
+        self.nombre_de_couches_cachees = self.nombre_de_couches - 1
         self.dimension_couches_cachees = neurones[1:-1]
         self.dimension_entree          = neurones[0] 
         self.dimension_sortie          = neurones[-1] 
@@ -70,10 +72,18 @@ class MCP():
     def gradient_descent(self, apprentissage, iterations, taux_apprentissage, evaluation=[]):
 
         for pas in range(iterations):
-            random.shuffle( apprentissage )
-            
+            self.maj_poids_biais(apprentissage, taux_apprentissage)
 
     #======================================================================
+    def maj_poids_biais ( self , donnees , taux_apprentissage ) :
+        pass
+
+    #======================================================================
+    def backprop (self , x , y ):
+        pass
+    #======================================================================
+
+
 
 if __name__ == "__main__" :
 
@@ -96,7 +106,7 @@ if __name__ == "__main__" :
                [ 1. ] ,
                [ 1. ] ,
                [ 0. ] ]
-    apprentissage = (entree,sortie)
+    apprentissage = entree,sortie
    
     
     entree = [ [ 0., 0. ] , 
@@ -107,8 +117,9 @@ if __name__ == "__main__" :
     evaluation = entree,sortie
 
     print( apprentissage[0] ) 
+    print( apprentissage[1] ) 
 
-    RN.gradient_descent( apprentissage, 6000, 1., evaluation )
+    RN.gradient_descent( apprentissage, 1, 1., evaluation )
 
 
 
