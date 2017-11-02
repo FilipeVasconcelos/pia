@@ -1,7 +1,7 @@
-reseau.py  : xor dur, mou !
+reseau.py  : classe multi-couches perceptron 
 
-putain.py  : python3 codes merveille 
-putain3.py : python3 codes merveille ( variante taux d'apprentissage il n'y a plus de sigmoide sur le vecteur d'output)
+pm.py  : python3 codes merveille 
+pm2.py : python3 codes merveille ( variante taux d'apprentissage il n'y a plus de sigmoide sur le vecteur d'output)
 
 pm.py      : pm (python merveille) + mnist
 

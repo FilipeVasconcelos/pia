@@ -10,6 +10,5 @@ if __name__ == "__main__" :
 
     print(date.today())
     print(sys.path)
-    n = reseau.Reseau()
 
 

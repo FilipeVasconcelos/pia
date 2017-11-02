@@ -5,12 +5,11 @@ import random
 import numpy as np
 import inspect
 
-from activation import sigmoide, sigmoide_
-#from mnist import * 
+from .activation import *
+#import activation
+#import sigmoide, sigmoide_
 
 float_formatter = lambda x: "%12.8f" % x
-
-
 
 class MCP():
 
@@ -212,7 +211,7 @@ if __name__ == "__main__" :
             RN.gradient_descent( apprentissage, 30000, 1., evaluation )
 
     RN = MCP(nn,verbeux=2)
-    RN.gradient_descent( apprentissage, 200000, 10.0, evaluation )
+    RN.gradient_descent( apprentissage, 100000, 10.0, evaluation )
 
 
 
