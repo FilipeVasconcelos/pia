@@ -10,9 +10,6 @@
 #+AUTHOR: F. Vasconcelos, G. Roux
 #+TITLE: Introduction à l'intelligence artificielle
 
-* TODO introduction du biais
-
-
 * Introduction
 
 * Le OU exclusif
@@ -591,3 +588,20 @@ Pour une couche quelconque:
 & = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}.1\\
 & = -\sum_{k=1}^{m_{n+1}}\delta_{k}^{(n)}
 \end{align}
+
+* Exercices
+
+** Quadrants
+
+Implémenter un réseau de neurones capable de déterminer si un point généré
+aléatoirement se situe dans le premier, le deuxième, le troisième ou le
+quatrième quadrant du plan.
+
+Le reseau doit produire les sorties suivantes:
+
++ [1,0,0,0] si le point est dans le premier quadrant ($x>0$ et $y>0$)
++ [0,1,0,0] si le point est dans le deuxième quadrant ($x<0$ et $y>0$)
++ [0,0,1,0] si le point est dans le troisième quadrant ($x<0$ et $y<0$)
++ [0,0,0,1] si le point est dans le quatrième quadrant ($x>0$ et $y<0$)
+
+** Implémentation du biais

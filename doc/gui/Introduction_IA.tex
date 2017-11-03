@@ -1,4 +1,4 @@
-% Created 2017-11-03 ven. 11:50
+% Created 2017-11-03 ven. 15:27
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -31,26 +31,22 @@
 
 
 
-\section{{\bfseries\sffamily TODO} introduction du biais}
+\section{Introduction}
 \label{sec-1}
 
-
-\section{Introduction}
-\label{sec-2}
-
 \section{Le OU exclusif}
-\label{sec-3}
+\label{sec-2}
 
 $W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
 
 \section{Prérequis mathématiques et equivalant en Python}
-\label{sec-4}
+\label{sec-3}
 
 Le package Numpy est indispensable pour manipuler convenablement les vecteurs
 et les matrices.
 
 \subsection{Déclaration d'un vecteur, d'une matrice}
-\label{sec-4-1}
+\label{sec-3-1}
 
 \begin{verbatim}
 import numpy as np
@@ -69,7 +65,7 @@ print(X.T)
 Ce qui produit la sortie:
 
 \subsection{Le produit matriciel grâce à la fonction dot:}
-\label{sec-4-2}
+\label{sec-3-2}
 
 \begin{verbatim}
 L = np.array([ [10, 20, 30, 40] ])
@@ -83,7 +79,7 @@ print("C.L =", np.dot(C, L))
 Sortie:
 
 \subsection{Génération aléatoire de matrices}
-\label{sec-4-3}
+\label{sec-3-3}
 
 \begin{verbatim}
 A = np.random.uniform(size=(2, 5))
@@ -96,7 +92,7 @@ print(B)
 Sortie:
 
 \subsection{Produit de Hadamard}
-\label{sec-4-4}
+\label{sec-3-4}
 
 \textbf{Définition}
 
@@ -122,10 +118,10 @@ Sortie:
 
 
 \section{Un premier exemple: un réseau de neurones de type "feed forward"}
-\label{sec-5}
+\label{sec-4}
 
 \subsection{Terminologie}
-\label{sec-5-1}
+\label{sec-4-1}
 
 \textbf{Notation}
 
@@ -172,7 +168,7 @@ Si $X^{(0)}$ est l'entrée du réseau de neurones, on appelle sortie la matrice 
 matrice $Y^{(N)}$.
 
 \subsection{Expression de l'erreur}
-\label{sec-5-2}
+\label{sec-4-2}
 
 \textbf{Définition}
 
@@ -190,10 +186,10 @@ $m_{1}\times m_{0}+\dots+m_{N}\times m_{N-1}$ variables
 $\left\{w_{ij}^{(n)}\right\}$.
 
 \subsection{Calcul des dérivées partielles de l'erreur}
-\label{sec-5-3}
+\label{sec-4-3}
 
 \subsubsection{Par rapport aux coefficients de la dernière matrice}
-\label{sec-5-3-1}
+\label{sec-4-3-1}
 
 On calcule ici les dérivées partielles du type
 $\frac{\partial E}{\partial w_{ij}^{(N)}}$.
@@ -257,7 +253,7 @@ Cela permet la notation abrégée et généralisable suivante:
 \end{equation}
 
 \subsubsection{Par rapport aux coefficients des matrices des couches cachées}
-\label{sec-5-3-2}
+\label{sec-4-3-2}
 
 Calculons $\delta_{i}^{n}$ pour $n<N$:
 
@@ -305,7 +301,7 @@ Calculons $\frac{\partial E}{\partial w_{ij}^{(n)}}$:
 
 
 \section{Optimisation des matrices de poids - Rétropropagation}
-\label{sec-6}
+\label{sec-5}
 
 On chercha à trouver les coefficients $\left\{w_{ij}^{(n)}\right\}$ qui minimise
 l'erreur. On sait l'erreur $E$ diminue le plus rapidement dans la direction
@@ -315,12 +311,12 @@ Autrement dit, à chaque $w_{ij}^{(n)$ on va ajouter
 $dw_{ij}^{(n)}=\delta_{i}^{(n)}y_{j}^{(n-1)}$.
 
 \subsection{Récapitulatif des formules en vue de l'implémentation}
-\label{sec-6-1}
+\label{sec-5-1}
 
 Les formules suivantes peuvent être implémentées quasiment telles quelles:
 
 \subsubsection{Version entrée en colonne}
-\label{sec-6-1-1}
+\label{sec-5-1-1}
 
 On note: $\delta^{(n)} = \begin{pmatrix}\delta_{1}^{(n)}\\
 \delta_{2}^{(n)}\\\dots\\\delta_{m_{n}}^{(n)}\end{pmatrix}$, $L_{i}^{(n)}$ la
@@ -364,7 +360,7 @@ dw_{ij}^{(1)}&=-\sigma^{(1)}'(x_{i}^{(1)})
 \end{enumerate}
 
 \subsubsection{Version transposée}
-\label{sec-6-1-2}
+\label{sec-5-1-2}
 
 Il peut être préférable de considéer l'entrée et les différentes couches du
 réseau comme des lignes plutôt que comme des colonnes. Il suffit pour cela de
@@ -427,7 +423,7 @@ On peut exprimer cela matriciellement:
 \end{enumerate}
 
 \subsubsection{Remarques}
-\label{sec-6-1-3}
+\label{sec-5-1-3}
 
 Le vecteur $\delta^{(n)}$ est l'opposé du gradient de l'erreur $E$, lorsque cette
 dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
@@ -438,7 +434,7 @@ dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
 
 
 \subsection{Sigmoïdes - Fonctions d'activation usuelles}
-\label{sec-6-2}
+\label{sec-5-2}
 
 On considère la fonction $f$ définie sur $\mathbb{R}$ par
 $f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
@@ -461,10 +457,10 @@ f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
 \end{align}
 
 \section{Exemple}
-\label{sec-7}
+\label{sec-6}
 
 \subsection{Les mathématiques}
-\label{sec-7-1}
+\label{sec-6-1}
 
 On va utiliser la version transposée avec le cas suivant:
 \begin{itemize}
@@ -511,10 +507,10 @@ On obtient:
 \end{align}
 
 \subsection{Implémentations en python}
-\label{sec-7-2}
+\label{sec-6-2}
 
 \subsubsection{Version basique}
-\label{sec-7-2-1}
+\label{sec-6-2-1}
 
 \begin{verbatim}
 # coding: utf-8
@@ -558,19 +554,19 @@ print(Y2)
 \end{verbatim}
 
 \subsubsection{Version améliorée}
-\label{sec-7-2-2}
+\label{sec-6-2-2}
 
 Le but de l'amélioration qui va suivre est d'écrire des fonctions réutilisables
 pour résoudre des problèmes plus compliqués.
 
 \section{Améliorations possibles}
-\label{sec-8}
+\label{sec-7}
 
 \subsection{Taux d'apprentissage}
-\label{sec-8-1}
+\label{sec-7-1}
 
 \subsection{Biais}
-\label{sec-8-2}
+\label{sec-7-2}
 
 Introduire un biais signifie transformer l'écriture
 $Y^{(n)}=\sigma^{n}(X^{(n)})$ en $Y^{(n)}=\sigma^{n}(X^{(n)}+B^{(n)})$.
@@ -602,5 +598,27 @@ Pour une couche quelconque:
 & = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}.1\\
 & = -\sum_{k=1}^{m_{n+1}}\delta_{k}^{(n)}
 \end{align}
+
+\section{Exercices}
+\label{sec-8}
+
+\subsection{Quadrants}
+\label{sec-8-1}
+
+Implémenter un réseau de neurones capable de déterminer si un point généré
+aléatoirement se situe dans le premier, le deuxième, le troisième ou le
+quatrième quadrant du plan.
+
+Le reseau doit produire les sorties suivantes:
+
+\begin{itemize}
+\item\relax [1,0,0,0] si le point est dans le premier quadrant ($x>0$ et $y>0$)
+\item\relax [0,1,0,0] si le point est dans le deuxième quadrant ($x<0$ et $y>0$)
+\item\relax [0,0,1,0] si le point est dans le troisième quadrant ($x<0$ et $y<0$)
+\item\relax [0,0,0,1] si le point est dans le quatrième quadrant ($x>0$ et $y<0$)
+\end{itemize}
+
+\subsection{Implémentation du biais}
+\label{sec-8-2}
 % Emacs 24.4.1 (Org mode 8.2.10)
 \end{document}
