@@ -14,7 +14,7 @@ qui est sous licence GPL licensed.
 """
 
 # ===================================================================
-def lire_ds (dataset= "apprentissage", path = "."):
+def lire_ds (dataset= "apprentissage", path = "/home/filipe/dev/pia/mnist_data"):
     """
     fonction Python pour importer les données MNIST.
     Elle renvoie un itérateur d'un tuple de dimension 2 :
@@ -47,7 +47,7 @@ def lire_ds (dataset= "apprentissage", path = "."):
         yield get_img(i)
 
 # ===================================================================
-def charger_donnees(dataset= "apprentissage", path = "." ):
+def charger_donnees(dataset= "apprentissage", path = "/home/filipe/dev/pia/mnist_data" ):
 
     mnist = lire_ds( dataset, path )
     entree = []
