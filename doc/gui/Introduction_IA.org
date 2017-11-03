@@ -5,10 +5,19 @@
 # +HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
 # +OPTIONS: html-style:nil
 
-# +PROPERTY: header-args :eval no
+#+PROPERTY: header-args :eval no
 
 #+AUTHOR: F. Vasconcelos, G. Roux
 #+TITLE: Introduction à l'intelligence artificielle
+
+* TODO introduction du biais
+
+
+* Introduction
+
+* Le OU exclusif
+
+$W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
 
 * Prérequis mathématiques et equivalant en Python
 
@@ -99,7 +108,7 @@ Sortie:
 #+RESULTS: bases_5
 
 
-* Un premier exemple de réseau de neurones
+* Un premier exemple: un réseau de neurones de type "feed forward"
 
 ** Terminologie
 
@@ -162,7 +171,7 @@ $Y^{(N)}$ est une fonction (dérivable si les $\sigma^{(n)}$ le sont) des
 $m_{1}\times m_{0}+\dots+m_{N}\times m_{N-1}$ variables
 $\left\{w_{ij}^{(n)}\right\}$.
 
-** Calcul des dérivées partielle de l'erreur
+** Calcul des dérivées partielles de l'erreur
 
 *** Par rapport aux coefficients de la dernière matrice
 
@@ -273,7 +282,8 @@ Calculons $\frac{\partial E}{\partial w_{ij}^{(n)}}$:
 & = -\delta_{i}^{(n)}y_{j}^{(n-1)}
 \end{align}
 
-* Mise à jour des matrices de poids - Rétropropagation
+
+* Optimisation des matrices de poids - Rétropropagation
 
 On chercha à trouver les coefficients $\left\{w_{ij}^{(n)}\right\}$ qui minimise
 l'erreur. On sait l'erreur $E$ diminue le plus rapidement dans la direction
@@ -386,6 +396,29 @@ dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
 \delta^{(n)} = - \nabla \left(E(x_{1}^{(n)},\dots,x_{m_{n}}^{(n)})\right)
 \end{equation}
 
+
+** Sigmoïdes - Fonctions d'activation usuelles
+
+On considère la fonction $f$ définie sur $\mathbb{R}$ par
+$f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
+
+$f$ est de classe $C^{\infty}$ et on a:
+
+\begin{align}
+f'(x) & = -\frac{-ae^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = a\frac{e^{-ax}}{(1+e^{-ax})^{(2)}}
+\end{align}
+
+On constate que $f$ est solution de l'équation différentielle $y'=ay(1-y)$. En
+effet:
+
+\begin{align}
+f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
+& = \frac{1}{1+e^{-ax}}(\frac{1+e^{-ax}-1}{1+e^{-ax}})\\
+& = \frac{e^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = \frac{1}{a}f'(x)
+\end{align}
+
 * Exemple
 
 ** Les mathématiques
@@ -460,13 +493,12 @@ for i in range(iterations):
     E = T - Y2                          # erreur
 
     d2 = sigmoide_(Y2) * E              # d2  
+    dW2 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
+    W2 += dW2                           # mise à jour des poides de la couche 2
+
     d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
-
-    dW1 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
-    dW2 = X0.T.dot(d1)                  # somme sur les entrées des dW2
-
-    W2 += dW1                           # mise à jour des poides de la couche 2
-    W1 += dW2                           # et des poids de la couche 1
+    dW1 = X0.T.dot(d1)                  # somme sur les entrées des dW2
+    W1 += dW1                           # et des poids de la couche 1
      
 print(Y2)
 #+END_SRC
@@ -476,7 +508,7 @@ print(Y2)
 Le but de l'amélioration qui va suivre est d'écrire des fonctions réutilisables
 pour résoudre des problèmes plus compliqués.
 
-#+BEGIN_SRC python :exports both :results output :tangle xor.py
+#+BEGIN_SRC python :exports none :results output :tangle xor.py
 
 # coding: utf-8
 # XOR amélioré
@@ -522,29 +554,40 @@ for i in range(iterations):
 print(Y2)
 #+END_SRC
 
-** Le OU exclusif
 
-$W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
+* Améliorations possibles
 
-** La fonction d'activation: sigmoïde
+** Taux d'apprentissage
 
-On considère la fonction $f$ définie sur $\mathbb{R}$ par
-$f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
+** Biais
 
-$f$ est de classe $C^{\infty}$ et on a:
+Introduire un biais signifie transformer l'écriture
+$Y^{(n)}=\sigma^{n}(X^{(n)})$ en $Y^{(n)}=\sigma^{n}(X^{(n)}+B^{(n)})$.
 
-\begin{align}
-f'(x) & = -\frac{-ae^{-ax}}{(1+e^{-ax})^{(2)}}\\
-& = a\frac{e^{-ax}}{(1+e^{-ax})^{(2)}}
-\end{align}
-
-On constate que $f$ est solution de l'équation différentielle $y'=ay(1-y)$. En
-effet:
+A nouveau, calculons, en notations colonnes, les dérivées partielles de l'erreur
+en fonctions des biais de la dernière couche ($n=N$):
 
 \begin{align}
-f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
-& = \frac{1}{1+e^{-ax}}(\frac{1+e^{-ax}-1}{1+e^{-ax}})\\
-& = \frac{e^{-ax}}{(1+e^{-ax})^{(2)}}\\
-& = \frac{1}{a}f'(x)
+\frac{\partial E}{\partial b_{i}^{(N)}}
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial x_{k}^{(N)}}{\partial b_{i}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial (\sum_{l=1}^{n_{N-1}}w_{il}^{(N)}y_{l}^{(N-1)}+b_{l}^{(N)})}
+{\partial b_{i}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}.1\\
+& = -\sum_{k=1}^{m_{N}}\delta_{k}^{N}
 \end{align}
 
+L'expression ci-dessus ne dépend pas de $i$.
+
+Pour une couche quelconque:
+
+\begin{align}
+\frac{\partial E}{\partial b_{i}^{(n)}}
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial x_{l}^{(n)}}{\partial b_{i}^{(n)}}\\
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial \left(\sum w_{kl}^{(n-1)}y_{l}^{(n-1)}+b_{l}^{(n)}\right)}{\partial b_{i}^{(n)}}\\
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}.1\\
+& = -\sum_{k=1}^{m_{n+1}}\delta_{k}^{(n)}
+\end{align}
