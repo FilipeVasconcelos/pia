@@ -1,4 +1,4 @@
-% Created 2017-11-01 mer. 19:03
+% Created 2017-11-03 ven. 15:27
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -31,14 +31,22 @@
 
 
 
-\section{Prérequis mathématiques et equivalant en Python}
+\section{Introduction}
 \label{sec-1}
+
+\section{Le OU exclusif}
+\label{sec-2}
+
+$W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
+
+\section{Prérequis mathématiques et equivalant en Python}
+\label{sec-3}
 
 Le package Numpy est indispensable pour manipuler convenablement les vecteurs
 et les matrices.
 
 \subsection{Déclaration d'un vecteur, d'une matrice}
-\label{sec-1-1}
+\label{sec-3-1}
 
 \begin{verbatim}
 import numpy as np
@@ -48,14 +56,6 @@ print(X)
 
 Ce qui produit la sortie:
 
-\begin{verbatim}
-
->>> [[0 0]
- [0 1]
- [1 0]
- [1 1]]
-\end{verbatim}
-
 Observons tout de suite la syntaxe pour transposer une matrice:
 
 \begin{verbatim}
@@ -64,13 +64,8 @@ print(X.T)
 
 Ce qui produit la sortie:
 
-\begin{verbatim}
-[[0 0 1 1]
- [0 1 0 1]]
-\end{verbatim}
-
 \subsection{Le produit matriciel grâce à la fonction dot:}
-\label{sec-1-2}
+\label{sec-3-2}
 
 \begin{verbatim}
 L = np.array([ [10, 20, 30, 40] ])
@@ -83,21 +78,8 @@ print("C.L =", np.dot(C, L))
 
 Sortie:
 
-\begin{verbatim}
->>> ('L =', array([[10, 20, 30, 40]]))
-('C =', array([[2],
-       [4],
-       [6],
-       [8]]))
-('L.C =', array([[600]]))
-('C.L =', array([[ 20,  40,  60,  80],
-       [ 40,  80, 120, 160],
-       [ 60, 120, 180, 240],
-       [ 80, 160, 240, 320]]))
-\end{verbatim}
-
 \subsection{Génération aléatoire de matrices}
-\label{sec-1-3}
+\label{sec-3-3}
 
 \begin{verbatim}
 A = np.random.uniform(size=(2, 5))
@@ -109,17 +91,8 @@ print(B)
 
 Sortie:
 
-\begin{verbatim}
-
->>> >>> [[ 0.84988774  0.84222283  0.71417327  0.54822657  0.45298536]
- [ 0.63462236  0.16929911  0.54541409  0.26605698  0.55474429]]
-[[ 0.17312494]
- [ 0.176538  ]
- [ 0.64670851]]
-\end{verbatim}
-
 \subsection{Produit de Hadamard}
-\label{sec-1-4}
+\label{sec-3-4}
 
 \textbf{Définition}
 
@@ -143,21 +116,12 @@ print(A * B)
 
 Sortie:
 
-\begin{verbatim}
 
->>> >>> [[ 1.  2.  3.  4.  5.]
- [ 1.  2.  3.  4.  5.]]
-[[ 2.  2.  2.  2.  2.]]
->>> [[  2.   4.   6.   8.  10.]
- [  2.   4.   6.   8.  10.]]
-\end{verbatim}
-
-
-\section{Un premier exemple de réseau de neurones}
-\label{sec-2}
+\section{Un premier exemple: un réseau de neurones de type "feed forward"}
+\label{sec-4}
 
 \subsection{Terminologie}
-\label{sec-2-1}
+\label{sec-4-1}
 
 \textbf{Notation}
 
@@ -204,7 +168,7 @@ Si $X^{(0)}$ est l'entrée du réseau de neurones, on appelle sortie la matrice 
 matrice $Y^{(N)}$.
 
 \subsection{Expression de l'erreur}
-\label{sec-2-2}
+\label{sec-4-2}
 
 \textbf{Définition}
 
@@ -221,11 +185,11 @@ $Y^{(N)}$ est une fonction (dérivable si les $\sigma^{(n)}$ le sont) des
 $m_{1}\times m_{0}+\dots+m_{N}\times m_{N-1}$ variables
 $\left\{w_{ij}^{(n)}\right\}$.
 
-\subsection{Calcul des dérivées partielle de l'erreur}
-\label{sec-2-3}
+\subsection{Calcul des dérivées partielles de l'erreur}
+\label{sec-4-3}
 
 \subsubsection{Par rapport aux coefficients de la dernière matrice}
-\label{sec-2-3-1}
+\label{sec-4-3-1}
 
 On calcule ici les dérivées partielles du type
 $\frac{\partial E}{\partial w_{ij}^{(N)}}$.
@@ -289,7 +253,7 @@ Cela permet la notation abrégée et généralisable suivante:
 \end{equation}
 
 \subsubsection{Par rapport aux coefficients des matrices des couches cachées}
-\label{sec-2-3-2}
+\label{sec-4-3-2}
 
 Calculons $\delta_{i}^{n}$ pour $n<N$:
 
@@ -335,8 +299,9 @@ Calculons $\frac{\partial E}{\partial w_{ij}^{(n)}}$:
 & = -\delta_{i}^{(n)}y_{j}^{(n-1)}
 \end{align}
 
-\section{Mise à jour des matrices de poids - Rétropropagation}
-\label{sec-3}
+
+\section{Optimisation des matrices de poids - Rétropropagation}
+\label{sec-5}
 
 On chercha à trouver les coefficients $\left\{w_{ij}^{(n)}\right\}$ qui minimise
 l'erreur. On sait l'erreur $E$ diminue le plus rapidement dans la direction
@@ -346,12 +311,12 @@ Autrement dit, à chaque $w_{ij}^{(n)$ on va ajouter
 $dw_{ij}^{(n)}=\delta_{i}^{(n)}y_{j}^{(n-1)}$.
 
 \subsection{Récapitulatif des formules en vue de l'implémentation}
-\label{sec-3-1}
+\label{sec-5-1}
 
 Les formules suivantes peuvent être implémentées quasiment telles quelles:
 
 \subsubsection{Version entrée en colonne}
-\label{sec-3-1-1}
+\label{sec-5-1-1}
 
 On note: $\delta^{(n)} = \begin{pmatrix}\delta_{1}^{(n)}\\
 \delta_{2}^{(n)}\\\dots\\\delta_{m_{n}}^{(n)}\end{pmatrix}$, $L_{i}^{(n)}$ la
@@ -395,7 +360,7 @@ dw_{ij}^{(1)}&=-\sigma^{(1)}'(x_{i}^{(1)})
 \end{enumerate}
 
 \subsubsection{Version transposée}
-\label{sec-3-1-2}
+\label{sec-5-1-2}
 
 Il peut être préférable de considéer l'entrée et les différentes couches du
 réseau comme des lignes plutôt que comme des colonnes. Il suffit pour cela de
@@ -458,7 +423,7 @@ On peut exprimer cela matriciellement:
 \end{enumerate}
 
 \subsubsection{Remarques}
-\label{sec-3-1-3}
+\label{sec-5-1-3}
 
 Le vecteur $\delta^{(n)}$ est l'opposé du gradient de l'erreur $E$, lorsque cette
 dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
@@ -467,11 +432,35 @@ dernière est exprimée en fonction des $x_{i}^{(n)}$. Autrement dit:
 \delta^{(n)} = - \nabla \left(E(x_{1}^{(n)},\dots,x_{m_{n}}^{(n)})\right)
 \end{equation}
 
+
+\subsection{Sigmoïdes - Fonctions d'activation usuelles}
+\label{sec-5-2}
+
+On considère la fonction $f$ définie sur $\mathbb{R}$ par
+$f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
+
+$f$ est de classe $C^{\infty}$ et on a:
+
+\begin{align}
+f'(x) & = -\frac{-ae^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = a\frac{e^{-ax}}{(1+e^{-ax})^{(2)}}
+\end{align}
+
+On constate que $f$ est solution de l'équation différentielle $y'=ay(1-y)$. En
+effet:
+
+\begin{align}
+f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
+& = \frac{1}{1+e^{-ax}}(\frac{1+e^{-ax}-1}{1+e^{-ax}})\\
+& = \frac{e^{-ax}}{(1+e^{-ax})^{(2)}}\\
+& = \frac{1}{a}f'(x)
+\end{align}
+
 \section{Exemple}
-\label{sec-4}
+\label{sec-6}
 
 \subsection{Les mathématiques}
-\label{sec-4-1}
+\label{sec-6-1}
 
 On va utiliser la version transposée avec le cas suivant:
 \begin{itemize}
@@ -518,10 +507,10 @@ On obtient:
 \end{align}
 
 \subsection{Implémentations en python}
-\label{sec-4-2}
+\label{sec-6-2}
 
 \subsubsection{Version basique}
-\label{sec-4-2-1}
+\label{sec-6-2-1}
 
 \begin{verbatim}
 # coding: utf-8
@@ -554,108 +543,82 @@ for i in range(iterations):
     E = T - Y2                          # erreur
 
     d2 = sigmoide_(Y2) * E              # d2  
+    dW2 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
+    W2 += dW2                           # mise à jour des poides de la couche 2
+
     d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
-
-    dW1 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
-    dW2 = X0.T.dot(d1)                  # somme sur les entrées des dW2
-
-    W2 += dW1                           # mise à jour des poides de la couche 2
-    W1 += dW2                           # et des poids de la couche 1
+    dW1 = X0.T.dot(d1)                  # somme sur les entrées des dW2
+    W1 += dW1                           # et des poids de la couche 1
 
 print(Y2)
 \end{verbatim}
 
-\begin{verbatim}
-[[ 0.04418611]
- [ 0.97282793]
- [ 0.97282303]
- [ 0.01031442]]
-\end{verbatim}
-
 \subsubsection{Version améliorée}
-\label{sec-4-2-2}
+\label{sec-6-2-2}
 
 Le but de l'amélioration qui va suivre est d'écrire des fonctions réutilisables
 pour résoudre des problèmes plus compliqués.
 
-\begin{verbatim}
-# coding: utf-8
-# XOR amélioré
-import numpy as np
+\section{Améliorations possibles}
+\label{sec-7}
 
-iterations = 6000                # Nombre d'itérations
+\subsection{Taux d'apprentissage}
+\label{sec-7-1}
 
-tailleX0, tailleX1, tailleX2 = 2, 3, 1
+\subsection{Biais}
+\label{sec-7-2}
 
-X0 = np.array([[0,0], [0,1], [1,0], [1,1]])
-T = np.array([ [0],   [1],   [1],   [0]])
+Introduire un biais signifie transformer l'écriture
+$Y^{(n)}=\sigma^{n}(X^{(n)})$ en $Y^{(n)}=\sigma^{n}(X^{(n)}+B^{(n)})$.
 
-def sigmoide (x):
-    return 1/(1 + np.exp(-x))    # fonction d'activation
-def sigmoide_(x):
-    return x * (1 - x)           # dérivée de la fonction d'activation
-
-# Poids
-W1 = np.random.uniform(size=(tailleX0, tailleX1))
-W2 = np.random.uniform(size=(tailleX1,tailleX2))
-
-def traiter(X0):
-    X1 = np.dot(X0, W1)                 # entrée couche 1
-    Y1 = sigmoide(X1)                   # activation couche 1
-    X2 = np.dot(Y1, W2)                 # entrée couche 2
-    Y2 = sigmoide(X2)                   # activation couche 2
-    return Y1, Y2
-
-for i in range(iterations):
-    Y1, Y2 = traiter(X0)
-
-    E = T - Y2                          # erreur
-
-    d2 = sigmoide_(Y2) * E              # d2  
-    d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
-
-    dW1 = Y1.T.dot(d2)                  # somme sur les entrées des dW1
-    dW2 = X0.T.dot(d1)                  # somme sur les entrées des dW2
-
-    W2 += dW1                           # mise à jour des poides de la couche 2
-    W1 += dW2                           # et des poids de la couche 1
-
-print(Y2)
-\end{verbatim}
-
-\begin{verbatim}
-[[ 0.04272965]
- [ 0.97370503]
- [ 0.97370852]
- [ 0.01002294]]
-\end{verbatim}
-
-\subsection{Le OU exclusif}
-\label{sec-4-3}
-
-$W^{1}=\begin{pmatrix}0\\0\end{pmatrix}$
-
-\subsection{La fonction d'activation: sigmoïde}
-\label{sec-4-4}
-
-On considère la fonction $f$ définie sur $\mathbb{R}$ par
-$f(x)=\frac{1}{1+e^{-ax}}$, où $a$ est un réel strictement positif.
-
-$f$ est de classe $C^{\infty}$ et on a:
+A nouveau, calculons, en notations colonnes, les dérivées partielles de l'erreur
+en fonctions des biais de la dernière couche ($n=N$):
 
 \begin{align}
-f'(x) & = -\frac{-ae^{-ax}}{(1+e^{-ax})^{(2)}}\\
-& = a\frac{e^{-ax}}{(1+e^{-ax})^{(2)}}
+\frac{\partial E}{\partial b_{i}^{(N)}}
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial x_{k}^{(N)}}{\partial b_{i}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}
+\frac{\partial (\sum_{l=1}^{n_{N-1}}w_{il}^{(N)}y_{l}^{(N-1)}+b_{l}^{(N)})}
+{\partial b_{i}^{(N)}}\\
+& = \sum_{k=1}^{m_{N}}\frac{\partial E}{\partial x_{k}^{(N)}}.1\\
+& = -\sum_{k=1}^{m_{N}}\delta_{k}^{N}
 \end{align}
 
-On constate que $f$ est solution de l'équation différentielle $y'=ay(1-y)$. En
-effet:
+L'expression ci-dessus ne dépend pas de $i$.
+
+Pour une couche quelconque:
 
 \begin{align}
-f(x)(1-f(x)) & = \frac{1}{1+e^{-ax}}(1-\frac{1}{1+e^{-ax}})\\
-& = \frac{1}{1+e^{-ax}}(\frac{1+e^{-ax}-1}{1+e^{-ax}})\\
-& = \frac{e^{-ax}}{(1+e^{-ax})^{(2)}}\\
-& = \frac{1}{a}f'(x)
+\frac{\partial E}{\partial b_{i}^{(n)}}
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial x_{l}^{(n)}}{\partial b_{i}^{(n)}}\\
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}
+\frac{\partial \left(\sum w_{kl}^{(n-1)}y_{l}^{(n-1)}+b_{l}^{(n)}\right)}{\partial b_{i}^{(n)}}\\
+& = \sum_{k=1}^{m_{n+1}}\frac{\partial E}{\partial x_{k}^{(n)}}.1\\
+& = -\sum_{k=1}^{m_{n+1}}\delta_{k}^{(n)}
 \end{align}
+
+\section{Exercices}
+\label{sec-8}
+
+\subsection{Quadrants}
+\label{sec-8-1}
+
+Implémenter un réseau de neurones capable de déterminer si un point généré
+aléatoirement se situe dans le premier, le deuxième, le troisième ou le
+quatrième quadrant du plan.
+
+Le reseau doit produire les sorties suivantes:
+
+\begin{itemize}
+\item\relax [1,0,0,0] si le point est dans le premier quadrant ($x>0$ et $y>0$)
+\item\relax [0,1,0,0] si le point est dans le deuxième quadrant ($x<0$ et $y>0$)
+\item\relax [0,0,1,0] si le point est dans le troisième quadrant ($x<0$ et $y<0$)
+\item\relax [0,0,0,1] si le point est dans le quatrième quadrant ($x>0$ et $y<0$)
+\end{itemize}
+
+\subsection{Implémentation du biais}
+\label{sec-8-2}
 % Emacs 24.4.1 (Org mode 8.2.10)
 \end{document}
