@@ -25,23 +25,20 @@ if __name__ == "__main__" :
 
     nn  = [2,4,4]
 
-    RN = reseau.MCP(nn,verbeux=2)
+    RN = reseau.MCP(nn,verbeux=2,verbe_periode=10000)
 
     X0 = 20. * np.random.uniform(size=(20,2)) - 10.
     T = np.array([quadrant(tab) for tab in X0])
     apprentissage = X0, T
 
     evaluation=[]
-    W,B = RN.gradient_descent( apprentissage, 10000, 1.0, evaluation )
+    W,B = RN.gradient_descent( apprentissage, 50000, 2.0, evaluation )
 
-    print(W)
-    print(B)
-    #sys.exit()
     X0 = 20. * np.random.uniform(size=(1000,2)) - 10.
     T  = np.array([quadrant(tab) for tab in X0])
     evaluation = X0,T
 
-    RN= reseau.MCP(nn,verbeux=2,W=W,B=B)
+    RN= reseau.MCP(nn,verbeux=11,W=W,B=B, verbe_periode=100)
     RN.gradient_descent( apprentissage, 100000, 1.0, evaluation )
 
 

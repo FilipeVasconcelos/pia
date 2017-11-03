@@ -29,7 +29,7 @@ class MCP():
     """
 
     #======================================================================
-    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None ):
+    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None , verbe_periode=1):
 
         self.neurones                  = neurones
         self.nombre_de_couches         = len(neurones) - 1 
@@ -46,14 +46,18 @@ class MCP():
             self.B                     = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
             self.W                     = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
         else:
+            print("lecture des poids et biais")
             self.B                     = B
             self.W                     = W
-            self.nombre_de_couches_cachees = len(W)
-            self.nombre_de_couches = self.nombre_de_couches_cachees + 1 
+            self.nombre_de_couches     = len(W)
+            self.nombre_de_couches_cachees = self.nombre_de_couches - 1
+            print(len(self.B))
+            print(len(self.W))
 
-        self.str_sep                   = 20*"+---" 
+        self.str_sep                   = 20*"====" 
+        self.str_sep_                  = 6*"+---" 
         self.verbeux                   = verbeux
-        self.print_rate                = 1000
+        self.verbe_periode             = verbe_periode
 
     #======================================================================
     def get_tailles(self):
@@ -61,13 +65,22 @@ class MCP():
 
     #======================================================================
     def afficher_poids(self):
-        print("poids")
-        print("c n     w")
+        print("Poids")
+        print("c n     W")
         print(self.str_sep) 
         np.set_printoptions(precision=6,formatter={'float_kind':float_formatter})
         for i,w in enumerate(self.W):
             for j,wi in enumerate(w) :
                 print(i,j,"\n", np.array_str(wi, precision=6, max_line_width=75) )
+            print(self.str_sep)
+    #======================================================================
+    def afficher_biais(self):
+        print("Biais")
+        print("c n     B")
+        print(self.str_sep) 
+        for i,b in enumerate(self.B):
+            for j,bi in enumerate(b):
+                print(i,j,bi)
             print(self.str_sep) 
     #======================================================================
     def preparer_donnees (self, donnees):
@@ -104,24 +117,46 @@ class MCP():
         #print(X0)
         #print(T)
         if len(evaluation) > 0 :
+            print( self.str_sep ) 
+            print(30*" "+"EVALUATION")
+            print( self.str_sep ) 
             X0, T = self.preparer_donnees(evaluation)
             print(X0)
             print(T)
-            #feedforward
+            # ====================
+            #     feedforward
+            # ====================
             Y = []
             Y.append(X0)
             for k in range( self.nombre_de_couches ) :
+                print(k)
+                if self.verbeux > 10 : 
+                    print(self.str_sep) 
+                    print("Y",k,Y[k])
+                    print("W",k,self.W[k])
+                    print("B",k,self.B[k])
+                    print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
                 Y.append( sigmoide(X) )                     # activation 
            
             print( Y[-1] )
+            return
 
         #print(X0)
         #print(T)
         #sys.exit()
+        print( self.str_sep ) 
+        print(30*" "+"APPRENTISSAGE")
+        print( self.str_sep ) 
+        print()
+        print(6*" "+self.str_sep_ )
+        print("{:>10s} {:>14s}".format( "pas" , "erreur" ) )
+        print(6*" "+self.str_sep_ )
         for pas in range(iterations):
 
-            #feedforward
+            # ====================
+            #     feedforward
+            # ====================
             Y = []
             Y.append(X0)
             if self.verbeux > 10 : 
@@ -148,8 +183,11 @@ class MCP():
             # ====================
             E = T - Y[-1]                                    # erreur
             
-            if self.verbeux > 1 and pas%self.print_rate==0 : print (pas,(E**2).sum() )
+            if self.verbeux > 1 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e}".format( pas,(E**2).sum()) )
 
+            # ====================
+            #       backprop 
+            # ====================
             nabla = len(self.W) * [None] 
             dW    = len(self.W) * [None] 
             dB    = len(self.B) * [None] 
@@ -179,26 +217,23 @@ class MCP():
             if self.verbeux > 10 :
                 print( dW )
                 print( nabla )
-        print (pas,(E**2).sum() )
-        #print(Y[-1] )
-        #print(self.W)
-        #print(self.B)
+        print()
+        print()
+        print(self.str_sep)
+        print("convergence après {} pas : {:<18.6e}".format(pas+1,(E**2).sum() ) )
+        print(self.str_sep)
+        print()
+        print()
+        self.afficher_poids()
+        print()
+        self.afficher_biais()
+        print()
+        print()
+
         return self.W, self.B 
-#
-#    d3 = sigmoide_(Y3) * E              # d2  
-#    dW3 = Y2.T.dot(d3)                  # somme sur les entrées des dW1
-#    W3 += dW3                           # mise à jour des poides de la couche 2
-
-#    d2 = sigmoide_(Y2) * d3.dot(W3.T)   # d1 
-#    dW2 = Y1.T.dot(d2)                  # somme sur les entrées des dW2
-#    W2 += dW2                           # et des poids de la couche 1
-#
-#    d1 = sigmoide_(Y1) * d2.dot(W2.T)   # d1 
-#    dW1 = Y0.T.dot(d1)                  # somme sur les entrées des dW2
-#    W1 += dW1                           # et des poids de la couche 1
 
 
-
+    #======================================================================
 
 if __name__ == "__main__" :
 
