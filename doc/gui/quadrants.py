@@ -60,3 +60,12 @@ TTT = np.array([np.argmax(tab) for tab in TT])
 print(Y22)
 print(TTT)
 print(np.sum(Y22 == TTT) / 1000.)
+
+
+
+
+
+
+
+
+

@@ -139,8 +139,7 @@ class MCP():
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
                 Y.append( sigmoide(X) )                     # activation 
            
-            print( Y[-1] )
-            return
+            return Y[-1]
 
         #print(X0)
         #print(T)
@@ -183,7 +182,7 @@ class MCP():
             # ====================
             E = T - Y[-1]                                    # erreur
             
-            if self.verbeux > 1 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e}".format( pas,(E**2).sum()) )
+            if self.verbeux > 1 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e} ".format( pas,(E**2).sum()) )
 
             # ====================
             #       backprop 
@@ -222,13 +221,14 @@ class MCP():
         print(self.str_sep)
         print("convergence après {} pas : {:<18.6e}".format(pas+1,(E**2).sum() ) )
         print(self.str_sep)
-        print()
-        print()
-        self.afficher_poids()
-        print()
-        self.afficher_biais()
-        print()
-        print()
+        if self.verbeux > 10 :
+            print()
+            print()
+            self.afficher_poids()
+            print()
+            self.afficher_biais()
+            print()
+            print()
 
         return self.W, self.B 
 

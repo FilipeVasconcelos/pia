@@ -25,21 +25,59 @@ if __name__ == "__main__" :
 
     nn  = [2,4,4]
 
-    RN = reseau.MCP(nn,verbeux=2,verbe_periode=10000)
+    # ===============
+    #  apprentissage
+    # ===============
+    napp   = 200
+    epochs = 20000
+    eta    = 0.1 
+    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000)
 
-    X0 = 20. * np.random.uniform(size=(20,2)) - 10.
+    X0 = 2. * np.random.uniform(size=(napp,2)) - 1.
     T = np.array([quadrant(tab) for tab in X0])
     apprentissage = X0, T
-
     evaluation=[]
-    W,B = RN.gradient_descent( apprentissage, 50000, 2.0, evaluation )
+    W,B = RN.gradient_descent( apprentissage, epochs, eta, evaluation )
 
-    X0 = 20. * np.random.uniform(size=(1000,2)) - 10.
+    # ===============
+    #  evaluation
+    # ===============
+    neval = 1000
+    X0 = 20. * np.random.uniform(size=(neval,2)) - 10.
     T  = np.array([quadrant(tab) for tab in X0])
     evaluation = X0,T
 
-    RN= reseau.MCP(nn,verbeux=11,W=W,B=B, verbe_periode=100)
-    RN.gradient_descent( apprentissage, 100000, 1.0, evaluation )
+    RN= reseau.MCP(nn,verbeux=0,W=W,B=B, verbe_periode=100)
+    Y = RN.gradient_descent( apprentissage, 100000, 1.0, evaluation )
+
+    #print(Y)
+    cok = 0
+    for i,v in enumerate(T):
+#        print(i,v) 
+        vt = np.argmax(v)
+        ve = np.argmax(Y[i])
+        coord = X0[i]
+        print(coord,ve)
+        if vt == ve:
+            cok +=1 
+    print()
+    print()
+    print("evaluation score : {:6.2f} %".format(cok/neval*100.))   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

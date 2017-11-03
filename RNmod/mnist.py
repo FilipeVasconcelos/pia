@@ -6,7 +6,7 @@ import time
 import numpy as np
 from matplotlib import pyplot
 import matplotlib as mpl
-from term_colors import *
+from .term_colors import *
 
 """
 inspiré de http://abel.ee.ucla.edu/cvxopt/_downloads/mnist.py
