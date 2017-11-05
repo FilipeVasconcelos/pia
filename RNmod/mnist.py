@@ -8,10 +8,10 @@ from matplotlib import pyplot
 import matplotlib as mpl
 from .term_colors import *
 
-"""
+'''
 inspiré de http://abel.ee.ucla.edu/cvxopt/_downloads/mnist.py
 qui est sous licence GPL licensed.
-"""
+'''
 
 # ===================================================================
 def lire_ds (dataset= "apprentissage", path = "/home/filipe/dev/pia/mnist_data"):
@@ -58,7 +58,7 @@ def charger_donnees(dataset= "apprentissage", path = "/home/filipe/dev/pia/mnist
         except StopIteration:
             break  # Iterator exhausted: stop the loop
         else:
-            entree.append( np.reshape       ( image[1], (784) ) ) 
+            entree.append( np.reshape       ( image[1]/255, (784) ) ) 
             sortie.append( resultat_vecteur ( image[0])           )  
     return entree, sortie
 

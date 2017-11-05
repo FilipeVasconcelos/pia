@@ -46,13 +46,10 @@ class MCP():
             self.B                     = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
             self.W                     = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
         else:
-            print("lecture des poids et biais")
             self.B                     = B
             self.W                     = W
             self.nombre_de_couches     = len(W)
             self.nombre_de_couches_cachees = self.nombre_de_couches - 1
-            print(len(self.B))
-            print(len(self.W))
 
         self.str_sep                   = 20*"====" 
         self.str_sep_                  = 6*"+---" 
@@ -117,9 +114,10 @@ class MCP():
         #print(X0)
         #print(T)
         if len(evaluation) > 0 :
-            print( self.str_sep ) 
-            print(30*" "+"EVALUATION")
-            print( self.str_sep ) 
+            if self.verbeux > 10 : 
+                print( self.str_sep ) 
+                print(30*" "+"EVALUATION")
+                print( self.str_sep ) 
             X0, T = self.preparer_donnees(evaluation)
             print(X0)
             print(T)
@@ -144,10 +142,11 @@ class MCP():
         #print(X0)
         #print(T)
         #sys.exit()
-        print( self.str_sep ) 
-        print(30*" "+"APPRENTISSAGE")
-        print( self.str_sep ) 
-        print()
+        if self.verbeux > 10 : 
+            print( self.str_sep ) 
+            print(30*" "+"APPRENTISSAGE")
+            print( self.str_sep ) 
+            print()
         print(6*" "+self.str_sep_ )
         print("{:>10s} {:>14s}".format( "pas" , "erreur" ) )
         print(6*" "+self.str_sep_ )

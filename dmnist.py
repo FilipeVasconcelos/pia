@@ -17,27 +17,37 @@ if __name__ == "__main__":
     ds_mnist = mnist.lire_ds()
 
 
-    nn  = [img_taille[0]*img_taille[1],16,16,3] 
+    nn  = [img_taille[0]*img_taille[1],16,10] 
         
     X0 = []
     T  = []
-    napp = 60000 
-    for i in range(napp) :
-        image = next(ds_mnist)
-        #mnist.ascii_show(image[1])
-        mnist.grayramp_show ( image[1] )
-        time.sleep(1.0)
+    apprentissage = mnist.charger_donnees()
+    print ( "lecture des donnees mnist" ) 
+
+
+    #print( len (apprentissage[0]) , len (apprentissage[1]) )
+    napp = len (apprentissage[0])
+    kb= 600 
+    nb = int ( napp / kb ) 
+    #print(napp,kb,nb)
+    evaluation=[]
+    W=None
+    B=None
+    for k in range(kb):
+        print("batch : ", k,"/",kb)
+        #print ( len( apprentissage[0][k*nb:((k+1)*nb-1)]) ) 
+        #print ( k*nb,(k+1)*nb-1 ) 
+        X0 = apprentissage[0][k*nb:(k+1)*nb-1]
+        T  = apprentissage[1][k*nb:(k+1)*nb-1]
+        batch = X0, T 
+        RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,sigma=3.0,mu=0.,W=W,B=B)
+        W, B = RN.gradient_descent( batch, 10000, 0.1, evaluation )
+    sys.exit()
+    
+    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1,sigma=1.0,mu=0.)
+    W, B = RN.gradient_descent( apprentissage, 6000, 0.0001, evaluation )
 
     sys.exit()
-    apprentissage = X0, T  
-    evaluation=[]
-    
-    X0 = []
-    T  = []
-
-    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,sigma=0.1,mu=0.)
-    W, B = RN.gradient_descent( apprentissage, 40000, 0.01, evaluation )
-
 
     neval = 1000
     tailles=[3,5,7]
@@ -56,12 +66,12 @@ if __name__ == "__main__":
     RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,sigma=0.1,mu=0.,W=W,B=B)
     Y = RN.gradient_descent( apprentissage, 10000, 0.01, evaluation )
     
-    print(Y)
+    #print(Y)
     #sys.exit()        
     cok = 0
     cal = 0
     for i,t in enumerate(T):
-        print(t,Y[i])
+        #print(t,Y[i])
         vt = np.argmax(t)
         ve = np.argmax(Y[i])
         if vt == ve:
