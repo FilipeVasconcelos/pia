@@ -82,23 +82,7 @@ class MCP():
     #======================================================================
     def preparer_donnees (self, donnees):
 
-#        self.W[0][:,-1]=0.
-#        self.W[0][-1,-1]=1.
-#        self.W[1][:,-1]=0.
-#        self.W[1][-1,-1]=1.
-#        print(self.W[0],self.W[0][0][-1])
-#        print(self.W[1])
-        #sys.exit()
-
         T=np.asarray(donnees[1])
-
-#        app_save=donnees[0]
-#        X=[]
-#        for a in donnees[0] :
-#            a.append(1.0) 
-#            X.append(a)
-#        X0=np.asarray(X)
-
         X0=np.asarray(donnees[0])
         return X0,T
 
@@ -111,8 +95,6 @@ class MCP():
     def gradient_descent(self, apprentissage, iterations, taux_apprentissage, evaluation=[]):
 
         X0, T = self.preparer_donnees(apprentissage)
-        #print(X0)
-        #print(T)
         if len(evaluation) > 0 :
             if self.verbeux > 10 : 
                 print( self.str_sep ) 
@@ -139,9 +121,6 @@ class MCP():
            
             return Y[-1]
 
-        #print(X0)
-        #print(T)
-        #sys.exit()
         if self.verbeux > 10 : 
             print( self.str_sep ) 
             print(30*" "+"APPRENTISSAGE")
@@ -179,7 +158,7 @@ class MCP():
             # ====================
             #        ERREUR 
             # ====================
-            E = T - Y[-1]                                    # erreur
+            E = (T - Y[-1] ) / len (Y)   # erreur
             
             if self.verbeux > 1 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e} ".format( pas,(E**2).sum()) )
 
@@ -237,7 +216,6 @@ class MCP():
 if __name__ == "__main__" :
 
     nn  = [2,5,1]
-
 
     RN = MCP(nn)
     

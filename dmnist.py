@@ -12,7 +12,7 @@ if __name__ == "__main__":
     img_taille = (28,28)
 
     # =================================
-    #              FNN !!!
+    #              FNN 
     # =================================
     ds_mnist = mnist.lire_ds()
 
@@ -24,10 +24,9 @@ if __name__ == "__main__":
     apprentissage = mnist.charger_donnees()
     print ( "lecture des donnees mnist" ) 
 
-
     #print( len (apprentissage[0]) , len (apprentissage[1]) )
     napp = len (apprentissage[0])
-    kb= 600 
+    kb= 7500 
     nb = int ( napp / kb ) 
     #print(napp,kb,nb)
     evaluation=[]
@@ -40,8 +39,8 @@ if __name__ == "__main__":
         X0 = apprentissage[0][k*nb:(k+1)*nb-1]
         T  = apprentissage[1][k*nb:(k+1)*nb-1]
         batch = X0, T 
-        RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,sigma=3.0,mu=0.,W=W,B=B)
-        W, B = RN.gradient_descent( batch, 10000, 0.1, evaluation )
+        RN = reseau.MCP(nn,verbeux=2,verbe_periode=5000,sigma=1.0,mu=0.,W=W,B=B)
+        W, B = RN.gradient_descent( batch, 5000, 1.0, evaluation )
     sys.exit()
     
     RN = reseau.MCP(nn,verbeux=2,verbe_periode=1,sigma=1.0,mu=0.)

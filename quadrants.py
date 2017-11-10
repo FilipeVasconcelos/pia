@@ -29,7 +29,7 @@ if __name__ == "__main__" :
     #  apprentissage
     # ===============
     napp   = 200
-    epochs = 20000
+    epochs = 50000
     eta    = 0.1 
     RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000)
 
