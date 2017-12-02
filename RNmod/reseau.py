@@ -182,7 +182,7 @@ class MCP():
             nabla = len(self.W) * [None] 
             dW    = len(self.W) * [None] 
             dB    = len(self.B) * [None] 
-            nabla[-1]   =  taux_apprentissage * sigmoide_(Y[-1]) * E              
+            nabla[-1]   =  taux_apprentissage * Y[-1] * E              
             dW[-1]      = Y[-2].T.dot(nabla[-1])
             dB[-1]      = np.sum(nabla[-1],axis=0)
             self.W[-1] += dW[-1] 
@@ -199,10 +199,7 @@ class MCP():
                     print("nabla k+1", nabla[k+1] )
                     print("W[k+1]",self.W[k+1] )
 
-                if k == self.nombre_de_couches - 1 :
-                    nabla[k]  =  Y[k+1] * nabla[k+1].dot(self.W[k+1].T) 
-                else:
-                    nabla[k]  =  sigmoide_(Y[k+1]) * nabla[k+1].dot(self.W[k+1].T) 
+                nabla[k]  =  sigmoide_(Y[k+1]) * nabla[k+1].dot(self.W[k+1].T) 
                 dW[k]     =  Y[k].T.dot(nabla[k]) 
                 dB[k]     =  np.sum(nabla[k],axis=0)
                 self.W[k] += dW[k]
