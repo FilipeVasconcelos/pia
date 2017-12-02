@@ -29,7 +29,7 @@ class MCP():
     """
 
     #======================================================================
-    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None , verbe_periode=1):
+    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None , verbe_periode=1 , distrib_poids = "normale" ):
 
         self.neurones                  = neurones
         self.nombre_de_couches         = len(neurones) - 1 
@@ -41,10 +41,18 @@ class MCP():
 
         self.sigma_distnormale         = sigma
         self.mu_distnormale            = mu  
+        self.distrib_poids             = distrib_poids
 
         if not (W or B) :
-            self.B                     = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
-            self.W                     = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
+
+            if self.distrib_poids not in ["normale","uniforme"] : 
+                print(distrib_poids,'doit être',["normale","uniforme"])
+            if self.distrib_poids == "normale" :
+                self.B                 = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
+                self.W                 = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
+            elif self.distrib_poids == "uniforme" :
+                self.B                 = [np.random.uniform(0.,1.,(1, y)) * sigma for y in neurones[1:]] 
+                self.W                 = [np.random.uniform(0.,1.,(x, y)) * sigma for x, y in zip(neurones[:-1], neurones[1:])]
         else:
             self.B                     = B
             self.W                     = W
@@ -117,7 +125,10 @@ class MCP():
                     print("B",k,self.B[k])
                     print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
-                Y.append( sigmoide(X) )                     # activation 
+                if k == self.nombre_de_couches - 1 :
+                    Y.append( X )                     # activation 
+                else:
+                    Y.append( sigmoide(X) )                     # activation 
            
             return Y[-1]
 
@@ -148,11 +159,14 @@ class MCP():
                     print("B",k,self.B[k])
                     print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
-                Y.append( sigmoide(X) )                     # activation 
+                if k == self.nombre_de_couches - 1 :
+                    Y.append( X )                     # activation 
+                else:
+                    Y.append( sigmoide(X) )                     # activation 
                 if self.verbeux > 10 : 
                     print(k,Y)
 
-            if self.verbeux > 10 : 
+            if self.verbeux > 4 : 
                 print (Y[-1])
 
             # ====================
@@ -185,7 +199,10 @@ class MCP():
                     print("nabla k+1", nabla[k+1] )
                     print("W[k+1]",self.W[k+1] )
 
-                nabla[k]  =  sigmoide_(Y[k+1]) * nabla[k+1].dot(self.W[k+1].T) 
+                if k == self.nombre_de_couches - 1 :
+                    nabla[k]  =  Y[k+1] * nabla[k+1].dot(self.W[k+1].T) 
+                else:
+                    nabla[k]  =  sigmoide_(Y[k+1]) * nabla[k+1].dot(self.W[k+1].T) 
                 dW[k]     =  Y[k].T.dot(nabla[k]) 
                 dB[k]     =  np.sum(nabla[k],axis=0)
                 self.W[k] += dW[k]
@@ -207,6 +224,9 @@ class MCP():
             self.afficher_biais()
             print()
             print()
+        if self.verbeux > 1 : 
+            print (Y[-1])
+
 
         return self.W, self.B 
 

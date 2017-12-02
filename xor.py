@@ -6,9 +6,9 @@ import sys
 
 if __name__ == "__main__" :
 
-    nn  = [2,3,1]
+    nn  = [2,2,1]
 
-    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000)
+    RN = reseau.MCP(nn,verbeux=3,verbe_periode=1000,distrib_poids="uniforme")
 
     X0 = [ [ 0., 0. ] ,
            [ 0., 1. ] ,
@@ -22,9 +22,11 @@ if __name__ == "__main__" :
     apprentissage = X0, T
     evaluation=[]
 
-    W,B = RN.gradient_descent( apprentissage, 60000, 1.0, evaluation )
+    W,B = RN.gradient_descent( apprentissage, 200000, 1.0, evaluation )
 
-    sys.exit()
+    print(W)
+    print(B)
+    #sys.exit()
 
     X0 = [ [ 0., 0. ] ,
            [ 0., 1. ] ,
