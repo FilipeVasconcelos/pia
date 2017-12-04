@@ -126,6 +126,7 @@ class MCP():
                     print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
                 Y.append( sigmoide(X) )                     # activation 
+                #Y.append( X )                     # activation 
                 #if k == self.nombre_de_couches - 1 :
                 #    Y.append( X )                     # activation 
                 #else:
