@@ -58,7 +58,7 @@ def charger_donnees(dataset= "apprentissage", path = "./mnist_data" ):
         except StopIteration:
             break  # Iterator exhausted: stop the loop
         else:
-            entree.append( np.reshape       ( image[1]/255, (784) ) ) 
+            entree.append( np.reshape       ( image[1]/255., (784) ) ) 
             sortie.append( resultat_vecteur ( image[0])           )  
     return entree, sortie
 
@@ -117,7 +117,7 @@ def grayramp_show_(image):
     """
     row = ""    
     for i,x in enumerate(image):
-        print_color('  ', bg=gray( x/24 ), end='')
+        print_color('  ',bg=gray(x*255/25), end='')
         if i%28 == 0 :
             print(row)
 
@@ -140,7 +140,6 @@ if __name__ == "__main__" :
         image = next(mnist)
         ascii_show(image[1])
         grayramp_show ( image[1] )
-        #show(image[1])
         i+=1
 
     donnees = charger_donnees()
@@ -160,6 +159,6 @@ if __name__ == "__main__" :
 
     for img in imgs:
         grayramp_show_ (img) 
-        time.sleep(0.1)        
+        time.sleep(1.0)        
 
 

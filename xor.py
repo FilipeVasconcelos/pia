@@ -22,7 +22,7 @@ if __name__ == "__main__" :
     apprentissage = X0, T
     evaluation=[]
 
-    W,B = RN.gradient_descent( apprentissage, 200000, 1.0, evaluation )
+    W,B = RN.gradient_descent( apprentissage, 200000, 0.1, evaluation )
 
     print(W)
     print(B)
