@@ -103,7 +103,6 @@ class MCP():
 
     def gradient_descent(self, apprentissage, iterations, taux_apprentissage, evaluation=[]):
 
-        X0, T = self.preparer_donnees(apprentissage)
         if len(evaluation) > 0 :
             if self.verbeux > 10 : 
                 print( self.str_sep ) 
@@ -134,6 +133,7 @@ class MCP():
            
             return Y[-1]
 
+        X0, T = self.preparer_donnees(apprentissage)
         if self.verbeux > 10 : 
             print( self.str_sep ) 
             print(30*" "+"APPRENTISSAGE")

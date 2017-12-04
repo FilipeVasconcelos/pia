@@ -23,15 +23,15 @@ def quadrant(tab):
 
 if __name__ == "__main__" :
 
-    nn  = [2,4,4]
+    nn  = [2,4,4,4]
 
     # ===============
     #  apprentissage
     # ===============
-    napp   = 200
-    epochs = 50000
-    eta    = 0.1 
-    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000)
+    napp   = 400
+    epochs = 100000
+    eta    = 0.05 
+    RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,distrib_poids="normale")
 
     X0 = 2. * np.random.uniform(size=(napp,2)) - 1.
     T = np.array([quadrant(tab) for tab in X0])

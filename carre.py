@@ -78,7 +78,7 @@ if __name__ == "__main__":
     #              FNN !!!
     # =================================
 
-    nn  = [img_taille[0]*img_taille[1],32,16,3] 
+    nn  = [img_taille[0]*img_taille[1],16,16,3] 
         
     X0 = []
     T  = []
@@ -109,7 +109,6 @@ if __name__ == "__main__":
 
 
     neval = 1000
-    tailles=[3,5,7]
     imgs = []
     lbls = []
     # générer les labels parmis tailles

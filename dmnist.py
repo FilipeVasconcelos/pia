@@ -17,7 +17,7 @@ if __name__ == "__main__":
     ds_mnist = mnist.lire_ds()
 
 
-    nn  = [img_taille[0]*img_taille[1],128,128,10] 
+    nn  = [img_taille[0]*img_taille[1],128,64,10] 
         
     X0 = []
     T  = []
@@ -26,26 +26,33 @@ if __name__ == "__main__":
 
     #napp = len (apprentissage[0])
     napp=60000
-    kb= 1500
+    kb= 3000
     nb = int ( napp / kb ) 
     evaluation=[]
     W=None
     B=None
-    for k in range(kb):
-        print("batch : ", k,"/",kb)
-        X0 = apprentissage[0][k*nb:(k+1)*nb-1]
-        T  = apprentissage[1][k*nb:(k+1)*nb-1]
-        batch = X0, T 
-        RN = reseau.MCP(nn,verbeux=2,verbe_periode=500,distrib_poids="normale",keyg=True,sigma=1.0,mu=0.,W=W,B=B)
-        W, B = RN.gradient_descent( batch, 500, 0.1, evaluation )
-    
+    for kk in range(2):
+        for k in range(kb):
+            print("batch : ", k,"/",kb)
+            X0 = apprentissage[0][k*nb:(k+1)*nb-1]
+            T  = apprentissage[1][k*nb:(k+1)*nb-1]
+            batch = X0, T 
+            RN = reseau.MCP(nn,verbeux=2,verbe_periode=500,distrib_poids="normale",keyg=False,sigma=1.0,mu=0.,W=W,B=B)
+            W, B = RN.gradient_descent( batch, 1000, 0.1, evaluation )
+  
+    print(W)
+    print(B)
+    neval=10000
     evaluation = mnist.charger_donnees(dataset= "evaluation")
+    X0 = evaluation[0][0:neval]
+    T  = evaluation[1][0:neval]
+    evalu = X0,T
     RN = reseau.MCP(nn,verbeux=2,verbe_periode=1000,distrib_poids="normale",sigma=0.1,mu=0.,W=W,B=B)
-    Y = RN.gradient_descent( apprentissage, 10000, 0.1, evaluation )
+    Y = RN.gradient_descent( apprentissage, 10000, 0.1, evalu )
     
     cok = 0
     cal = 0
-    T=evaluation[1]
+    T=evalu[1]
     neval=len(T)
     for i,t in enumerate(T):
         vt = np.argmax(t)
@@ -54,8 +61,11 @@ if __name__ == "__main__":
             print("OK",vt,ve)
             cok += 1
         else:
-            mnist.grayramp_show_(evaluation[0][i])
+            #mnist.grayramp_show_(evaluation[0][i])
+            mnist.ascii_show_(evaluation[0][i])
             print("WRONG",vt,ve)
+            print(''.join('{}: {:8.6f} '.format(*y) for y in enumerate(Y[i])))
+            #print(t)
         cal += 1
     print(cal,cok)
     print("evaluation score : {:6.2f} %".format((cok/neval)*100.))
