@@ -1,12 +1,71 @@
-\documentclass{article}
+\documentclass[11pt,a4paper]{article} %twocolumn
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
-\usepackage{tikz}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[squaren,Gray]{SIunits}
+
+\usepackage{tabularx,booktabs}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=3.5cm}
+
+\newcounter{numques}
+\setcounter{numques}{0}
+\newcommand{\question}[1]{
+    \addtocounter{numques}{1}
+    \noindent {\large \textbf{Q\thenumques.}\,#1}
+}
+\newcounter{numexos}                   %Création d'un compteur qui s'appelle numexo
+\setcounter{numexos}{0}                %initialisation du compteur
+\newcommand{\exercice}[1]{             %Création d'une macro ayant un paramètre
+    \setcounter{numques}{0}
+    \addtocounter{numexos}{1}              %chaque fois que cette macro est appelée, elle ajoute 1 au compteur numexos
+    \noindent   {\Large \textbf{Exercice\,\thenumexos\,:}\,#1} %Met en rouge Exercice et la valeur du compteur appelée par \thenumeexos
+    }
+
+
+    \usepackage[a4paper]{hyperref}
+    \usepackage{url}
+    \usepackage{listings}
+    \usepackage{mymath}
+    \usepackage{kinematik}
+    \usepackage{defined_vectors}
+    \usepackage{graphicx,wrapfig}
+
+
+
+    \usepackage{pgf, tikz}
+    \usetikzlibrary{quotes,angles}
+    \usetikzlibrary{arrows}
+    \usetikzlibrary{calc}
+    \tikzstyle{arrow}=[draw, -latex]
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+    \title{\textsc{INGE1-{S1} -- Initiation au Réseau de Neurones }\\
+    \emph{TD 1 -- Apprentissage Profond (XOR) } }
+    \author{ESME Sudria -- Décembre 2017}
+    \date{}%L3 Info -- printemps 2012--2013}
+
+
+
+
 \begin{document}
+\maketitle
 \pagestyle{empty}
 
 \def\layersep{2.5cm}
 
 \begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+
     \tikzstyle{every pin edge}=[<-,shorten <=1pt]
     \tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
     \tikzstyle{input neuron}=[neuron, fill=green!50];
@@ -39,8 +98,8 @@
 
     % Annotate the layers
     \node[annot,above of=H-1, node distance=1cm] (hl) {Hidden layer};
-    \node[annot,left of=hl] {Input layer};
-    \node[annot,right of=hl] {Output layer};
+    \node[annot,left of=hl] {Entrée};
+    \node[annot,right of=hl] {Sortie};
 \end{tikzpicture}
 % End of code
 \end{document}

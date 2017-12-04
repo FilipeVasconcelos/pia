@@ -1,1 +1,6 @@
 *.pyc
+td_1.ps
+*.aux
+*.log
+*.blg
+*.dvi
