@@ -57,8 +57,8 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-    \title{\textsc{INGE1-{S1} -- Initiation au Réseaux de Neurones artificiels }\\
-    \emph{TD 1 -- Perceptron -- Apprentissage Profond (XOR) } }
+    \title{\textsc{INGE1-{S1} -- Initiation aux Réseaux de Neurones artificiels }\\
+    \emph{TD 1 -- Perceptron à couche unique et multi-couches -- (XOR) } }
     \author{ESME Sudria -- Décembre 2017}
     \date{}%L3 Info -- printemps 2012--2013}
 
@@ -69,16 +69,16 @@
 \maketitle
 \pagestyle{empty}
 
-\def\layersep{3.5cm}
+\def\layersep{3.0cm}
 
 
-\paragraph{Perceptron}$\,$\newline
+\paragraph{Perceptron à couche unique}$\,$\newline
 
-Le perceptron est composé de deux fonctions (somme et d'activation). Il agit sur un vecteur 
-d'entrée de $n$ composantes auxquelles on associe un poids $\omega_i$ et
-d'un biais $\omega_0$ associé à unité de valeur 1. La fonction $\Sigma$ est telle que :
+Le perceptron est composé de deux fonctions (somme et activation). Il agit sur un vecteur $\boldsymbol{x}$
+d'entrée de $n$ composantes auxquelles on associe des poids $\omega_i$, ainsi 
+qu'un biais $\omega_0$ (associé à unité de valeur 1). La fonction $\Sigma$ est telle que :
 $$
-y=\sum_i x_i\omega_i + \omega_0 
+y=\omega_0 + \sum_i x_i\omega_i
 $$
 
 et la fonction d'activation est la fonction d'Heaviside.
@@ -113,12 +113,12 @@ et la fonction d'activation est la fonction d'Heaviside.
 \end{center}
 
 \question{}
-Pour le perceptron suivant : 
+Soit le perceptron suivant : 
 
 \begin{center}
 \begin{tikzpicture}
         \node[functions] (center) {};
-        \node[below of=center,font=\scriptsize,text width=4em] {Fonction d'activation};
+        %\node[below of=center,font=\scriptsize,text width=4em] {Fonction d'activation};
         \draw[thick] (0.5em,0.5em) -- (0,0.5em) -- (0,-0.5em) -- (-0.5em,-0.5em);
         \draw (0em,0.75em) -- (0em,-0.75em);
         \draw (0.75em,0em) -- (-0.75em,0em);
@@ -142,21 +142,47 @@ Pour le perceptron suivant :
 \end{tikzpicture}
 \end{center}
 
-Calculer pour les poids et biais donnés ($\omega_0=-\dfrac{3}{2}$, $\omega_1=1$, $\omega_2=1$). 
-La sortie $y$ pour $\boldsymbol{x}=\{[0,0],[0,1],[1,0],[1,1]\}$.
+Calculer pour les poids et biais $\omega_0=-\dfrac{3}{2}$, $\omega_1=1$, $\omega_2=1$,
+la sortie $y$ pour $\boldsymbol{x}=\{[0,0],[0,1],[1,0],[1,1]\}$.
 Quel type de fonction décrit ce perceptron?
 
 
 \question{}
-Même question pour ($\omega_0=-\dfrac{1}{2}$, $\omega_1=1$, $\omega_2=1$)
+Même question avec $\omega_0=-\dfrac{1}{2}$, $\omega_1=1$, $\omega_2=1$.
+
+\question{}
+De même pour le perceptron suivant:
+
+\begin{center}
+\begin{tikzpicture}
+        \node[functions] (center) {};
+        %\node[below of=center,font=\scriptsize,text width=4em] {Fonction d'activation};
+        \draw[thick] (0.5em,0.5em) -- (0,0.5em) -- (0,-0.5em) -- (-0.5em,-0.5em);
+        \draw (0em,0.75em) -- (0em,-0.75em);
+        \draw (0.75em,0em) -- (-0.75em,0em);
+        \node[right of=center] (right) {};
+            \path[draw,-latex] (center) -- (right);
+        \node[functions,left=3em of center] (left) {$\sum$};
+            \path[draw,->] (left) -- (center);
+        %\node[below of=2] (dots) {$\vdots$} -- (dots) node[left of=dots] (ldots) {$\vdots$};
+        %\node[weights,below of=dots] (n) {$w_n$} -- (n) node[input,left of=n] (ln) {$x_n$};
+            %\path[draw,-latex] (ln) -- (n);
+            %\path[draw,-latex] (n) -- (left);
+        \node[weights,left of=left] (1) {-2} -- (1) node[input,left of=1] (l1) {$x_1$};
+            \path[draw,-latex] (l1) -- (1);
+            \path[draw,-latex] (1) -- (left);
+        \node[weights,above of=1] (0) {+1} -- (0) node[input,left of=0] (l0) {$1$};
+            \path[draw,-latex] (l0) -- (0);
+            \path[draw,-latex] (0) -- (left);
+\end{tikzpicture}
+\end{center}
 
 
 
-
-\paragraph{Multi-couches perceptron}
-Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\boldsymbol{x}$ de $i$ composantes $x_i$, de
-
-
+\paragraph{Perceptron multi-couches}
+Un réseau de neurones multi-couches est constitué d'un vecteur 
+d'entrée $\boldsymbol{x}$ de $i$ composantes $x_i$, d'une ou plusieurs
+couches dites cachées et d'une couche de sortie. 
 
 \begin{center}
 \begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
@@ -198,53 +224,57 @@ Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\bol
 \end{center}
 
 
-%2-3-1
-\begin{center}
-\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
-    \tikzstyle{every pin edge}=[latex-,shorten <=1pt]
-    \tikzstyle{neuron}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
-    \tikzstyle{input neuron}=[neuron, fill=green!50];
-    \tikzstyle{output neuron}=[neuron, fill=red!50];
-    \tikzstyle{hidden neuron}=[neuron, fill=blue!50];
-    \tikzstyle{annot} = [text width=4em, text centered]
+%%2-3-1
+%\begin{center}
+%\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+%    \tikzstyle{every pin edge}=[latex-,shorten <=1pt]
+%    \tikzstyle{neuron}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
+%    \tikzstyle{input neuron}=[neuron, fill=green!50];
+%    \tikzstyle{output neuron}=[neuron, fill=red!50];
+%    \tikzstyle{hidden neuron}=[neuron, fill=blue!50];
+%    \tikzstyle{annot} = [text width=4em, text centered]
 
-    % Draw the input layer nodes
-    \foreach \name / \y in {1,...,2}
-    % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
-    \node[neuron] (I-\name) at (0,-\y*3/2) {$x_\y$};
-    % Draw the hidden layer nodes
-    \foreach \name / \y in {1,...,3}
-        \path[yshift=0.75cm]
-            node[neuron] (H-\name) at (\layersep,-\y*3/2) {$h_\y$};
-    % Draw the output layer node
-    \node[neuron,pin={[pin edge={-latex,black}]right:},right of=H-2] (O) {$z$};
-    % Connect every node in the input layer with every node in the
-    % hidden layer.
-    \foreach \source in {1,...,2}
-    {
-        \foreach \dest in {1,...,3}
-        {
-            \ifthenelse{1 = \source }{
-            \path (I-\source) edge[-latex,black] node [midway,above left] {$w_{\source\dest}$} (H-\dest);  }{}
-            \ifthenelse{2 = \source }{
-            \path (I-\source) edge[-latex,black] node [midway,below right] {$w_{\source\dest}$} (H-\dest);  }{}
-        }
-    }
-    % Connect every node in the hidden layer with the output layer
-    \foreach \source in {1,...,3}
-    {
-        \foreach \dest in {z}
-        {
-            \ifthenelse{1 = \source }{
-            \path (H-\source) edge[-latex,black] node [midway,above] {$w_{\source\dest}$} (O);}{}
-            \ifthenelse{2 = \source }{
-            \path (H-\source) edge[-latex,black] node [midway,above]       {$w_{\source\dest}$} (O);}{}
-            \ifthenelse{3 = \source }{
-            \path (H-\source) edge[-latex,black] node [midway,below] {$w_{\source\dest}$} (O);}{}
-        }
-    }
-\end{tikzpicture}
-\end{center}
+%    % Draw the input layer nodes
+%    \foreach \name / \y in {1,...,2}
+%    % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+%    \node[neuron] (I-\name) at (0,-\y*3/2) {$x_\y$};
+%    % Draw the hidden layer nodes
+%    \foreach \name / \y in {1,...,3}
+%        \path[yshift=0.75cm]
+%            node[neuron] (H-\name) at (\layersep,-\y*3/2) {$h_\y$};
+%    % Draw the output layer node
+%    \node[neuron,pin={[pin edge={-latex,black}]right:},right of=H-2] (O) {$z$};
+%    % Connect every node in the input layer with every node in the
+%    % hidden layer.
+%    \foreach \source in {1,...,2}
+%    {
+%        \foreach \dest in {1,...,3}
+%        {
+%            \ifthenelse{1 = \source }{
+%            \path (I-\source) edge[-latex,black] node [midway,above left] {$w_{\source\dest}$} (H-\dest);  }{}
+%            \ifthenelse{2 = \source }{
+%            \path (I-\source) edge[-latex,black] node [midway,below right] {$w_{\source\dest}$} (H-\dest);  }{}
+%        }
+%    }
+%    % Connect every node in the hidden layer with the output layer
+%    \foreach \source in {1,...,3}
+%    {
+%        \foreach \dest in {z}
+%        {
+%            \ifthenelse{1 = \source }{
+%            \path (H-\source) edge[-latex,black] node [midway,above] {$w_{\source\dest}$} (O);}{}
+%            \ifthenelse{2 = \source }{
+%            \path (H-\source) edge[-latex,black] node [midway,above]       {$w_{\source\dest}$} (O);}{}
+%            \ifthenelse{3 = \source }{
+%            \path (H-\source) edge[-latex,black] node [midway,below] {$w_{\source\dest}$} (O);}{}
+%        }
+%    }
+%\end{tikzpicture}
+%\end{center}
+
+\question{}
+Pour la structure de neurones suivante 2-2-1:
+
 %2-2-1
 \begin{center}
 \begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
@@ -255,6 +285,7 @@ Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\bol
     \tikzstyle{hidden neuron}=[neuron, fill=blue!50];
     \tikzstyle{annot} = [text width=4em, text centered]
 
+    \coordinate (O) at (\layersep,-2);
     % Draw the input layer nodes
     \foreach \name / \y in {1,...,2}
     % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
@@ -266,7 +297,7 @@ Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\bol
             node[neuron] (H-\name) at (\layersep,-\y*3/2) {$h_\y$};
     }
     % Draw the output layer node
-            \node[neuron,pin={[pin edge={-latex,black}]right:}] at (O) {$z$};
+            \node[neuron,pin={[pin edge={-latex,black}]right:},right of=O] (O) {$y$};
     % Connect every node in the input layer with every node in the
     % hidden layer.
     \foreach \source in {1,...,2}
@@ -283,7 +314,7 @@ Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\bol
     % Connect every node in the hidden layer with the output layer
     \foreach \source in {1,...,2}
     {
-        \foreach \dest in {z}
+        \foreach \dest in {y}
         {
         \ifthenelse{1 = \source }{
         \path (H-\source) edge[-latex,black] node [midway,above] {$w_{\source\dest}$} (O);}{}
@@ -294,4 +325,16 @@ Un réseau de neurones multi-couches est constitué d'un vecteur d'entrée $\bol
     }
 \end{tikzpicture}
 \end{center}
+
+\'Etablir les équations (\og~Feed-Forward\fg) donnant $h_i$ et $y$ en fonction des poids et biais du réseau.
+
+\question{}
+Déterminer une forme matricielle du \og~Feed-Forward~\fg. 
+
+\question{}
+Vérifier que ce réseau de neurones reproduit la fonction XOR 
+avec $w_{01}=-1.0$, $w_{02}=-1.0$, $w_{11}=1.0$, $w_{12}=-1.0$, $w_{21}=-1.0$, $w_{22}=1.0$,$w_{1y}=1.0$, $w_{2y}=1.0$ et $w_{0y}=-0.1$.
+
+
+
 \end{document}
