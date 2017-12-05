@@ -29,25 +29,27 @@ class MCP():
     """
 
     #======================================================================
-    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None , verbe_periode=1 , distrib_poids = "normale" , keyg = True):
+    def __init__( self, neurones=[2,2,1], mu=0.0, sigma = 1.0,verbeux=0, W=None , B=None , verbe_periode=1 , distrib_poids = "normale" , keyg = True,activation="sigmoide"):
 
         self.neurones                  = neurones
         self.nombre_de_couches         = len(neurones) - 1 
         self.nombre_de_couches_cachees = self.nombre_de_couches - 1
 
-#        self.dimension_couches_cachees = neurones[1:-1]
-#        self.dimension_entree          = neurones[0] 
-#        self.dimension_sortie          = neurones[-1] 
-
         self.sigma_distnormale         = sigma
         self.mu_distnormale            = mu  
         self.distrib_poids             = distrib_poids
         self.keyg                      = keyg
+        self.activation                = activation
+
+        if self.activation not in ["sigmoide","binary_step"] :
+            print(self.activation,'doit être',["sigmoide","binary_step"])
+            sys.exit()
 
         if not (W or B) :
 
             if self.distrib_poids not in ["normale","uniforme"] : 
                 print(distrib_poids,'doit être',["normale","uniforme"])
+                sys.exit()
             if self.distrib_poids == "normale" :
                 self.B                 = [np.random.randn(1, y) * sigma + mu for y in neurones[1:]] 
                 self.W                 = [np.random.randn(x, y) * sigma + mu for x, y in zip(neurones[:-1], neurones[1:])]
@@ -125,12 +127,10 @@ class MCP():
                     print("B",k,self.B[k])
                     print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
-                Y.append( sigmoide(X) )                     # activation 
-                #Y.append( X )                     # activation 
-                #if k == self.nombre_de_couches - 1 :
-                #    Y.append( X )                     # activation 
-                #else:
-                #    Y.append( sigmoide(X) )                     # activation 
+                if self.activation == "sigmoide":
+                    Y.append( sigmoide(X) )                     # activation 
+                elif self.activation == "binary_step":
+                    Y.append( binary_step(X) )
            
             return Y[-1]
 
@@ -163,10 +163,6 @@ class MCP():
                     print(self.str_sep) 
                 X = np.dot(Y[k], self.W[k]) + self.B[k]     # entrée 
                 Y.append( sigmoide(X) )                     # activation 
-                #if k == self.nombre_de_couches - 1 :
-                #    Y.append( X )                     # activation 
-                #else:
-                #    Y.append( sigmoide(X) )                     # activation 
                 if self.verbeux > 10 : 
                     print(k,Y)
 

@@ -1,14 +1,15 @@
 #coding: utf-8
 
-import sys
-import time
-import numpy as np
-import random
-from RNmod import mnist
-from RNmod import reseau
 
 if __name__ == "__main__":
+    import sys
+    import time
+    import numpy as np
+    import random
+    from RNmod import mnist
+    from RNmod import reseau
 
+    np.set_printoptions(threshold='nan')
     img_taille = (28,28)
 
     # =================================
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     evaluation=[]
     W=None
     B=None
-    for kk in range(2):
+    for kk in range(10):
         for k in range(kb):
             print("batch : ", k,"/",kb)
             X0 = apprentissage[0][k*nb:(k+1)*nb-1]
@@ -62,7 +63,7 @@ if __name__ == "__main__":
             cok += 1
         else:
             #mnist.grayramp_show_(evaluation[0][i])
-            mnist.ascii_show_(evaluation[0][i])
+            mnist.ascii_show_([int(x) for x in evaluation[0][i]*255])
             print("WRONG",vt,ve)
             print(''.join('{}: {:8.6f} '.format(*y) for y in enumerate(Y[i])))
             #print(t)

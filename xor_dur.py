@@ -8,11 +8,14 @@ if __name__ == "__main__" :
 
     nn  = [2,2,1]
 
-    RN = reseau.MCP(nn,verbeux=12,verbe_periode=1000,distrib_poids="uniforme")
+    #RN = reseau.MCP(nn,verbeux=12,verbe_periode=1000,distrib_poids="uniforme",activation="binary_step")
 
-    W=[np.array([[ 6.8900000 ,  8.5958971 ],
-            [ 6.8900000 ,  8.5945971]]), np.array([[-18.8870000],[ 18.88870000]])]
+    #paramètres optimisées
+    W=[np.array([[ 6.8900000 ,  8.5958971 ] ,
+                 [ 6.8900000 ,  8.5945971]]), np.array([[-18.8870000],[ 18.88870000]])]
     B=[np.array([[-10.50616154,  -4.01803533]]), np.array([[-8.70920879]])]
+    #W=[np.array([[ 1.0 , -1.0 ], [ -1.0 ,  1.0]]),np.array([[1.0],[1.0]])]
+    #B=[np.array([[-1.0,-1.0]]),np.array([[-0.1]])]
 
 
     print(W)
@@ -30,7 +33,8 @@ if __name__ == "__main__" :
              [ 0. ] ]
     apprentissage = X0,T
     evaluation = X0, T 
-    RN = reseau.MCP(nn,verbeux=12,verbe_periode=10000,W=W,B=B)
+    RN = reseau.MCP(nn,verbeux=12,verbe_periode=10000,W=W,B=B,activation="binary_step")
+#    RN = reseau.MCP(nn,verbeux=12,verbe_periode=10000,W=W,B=B,activation="sigmoide")
     Y = RN.gradient_descent( apprentissage, 100000, 1.0, evaluation )
 
     cok = 0

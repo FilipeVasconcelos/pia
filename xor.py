@@ -1,14 +1,14 @@
 #coding : utf-8
 
-from RNmod import reseau 
-import numpy as np
-import sys
 
 if __name__ == "__main__" :
+    from RNmod import reseau 
+    import numpy as np
+    import sys
 
     nn  = [2,2,1]
 
-    RN = reseau.MCP(nn,verbeux=3,verbe_periode=1000,distrib_poids="uniforme")
+    RN = reseau.MCP(nn,verbeux=3,verbe_periode=10000,distrib_poids="uniforme")
 
     X0 = [ [ 0., 0. ] ,
            [ 0., 1. ] ,
@@ -21,9 +21,7 @@ if __name__ == "__main__" :
              [ 0. ] ]
     apprentissage = X0, T
     evaluation=[]
-
-    W,B = RN.gradient_descent( apprentissage, 400000, 0.1, evaluation )
-
+    W,B = RN.gradient_descent( apprentissage, 100000, 0.1, evaluation )
     print(W)
     print(B)
 
@@ -39,7 +37,7 @@ if __name__ == "__main__" :
 
     evaluation = X0, T 
     RN = reseau.MCP(nn,verbeux=2,verbe_periode=10000,W=W,B=B)
-    Y = RN.gradient_descent( apprentissage, 100000, 1.0, evaluation )
+    Y = RN.gradient_descent( apprentissage, 1, 1.0, evaluation )
 
     cok = 0
     for i,t in enumerate(T):
@@ -52,4 +50,3 @@ if __name__ == "__main__" :
     print()
     print()
     print("evaluation score : {:6.2f} %".format((cok/4.)*100.))
-
