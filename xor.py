@@ -2,6 +2,7 @@
 
 
 if __name__ == "__main__" :
+
     from RNmod import reseau 
     import numpy as np
     import sys
@@ -21,7 +22,7 @@ if __name__ == "__main__" :
              [ 0. ] ]
     apprentissage = X0, T
     evaluation=[]
-    W,B = RN.gradient_descent( apprentissage, 100000, 0.1, evaluation )
+    W,B = RN.gradient_descent( apprentissage, 1000000, 0.1, evaluation )
     print(W)
     print(B)
 

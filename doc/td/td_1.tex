@@ -150,8 +150,9 @@ Quel type de fonction décrit ce perceptron?
 \question{}
 Même question avec $\omega_0=-\dfrac{1}{2}$, $\omega_1=1$, $\omega_2=1$.
 
+\newpage
 \question{}
-De même pour le perceptron suivant:
+Même question pour le perceptron suivant:
 
 \begin{center}
 \begin{tikzpicture}
@@ -181,7 +182,7 @@ De même pour le perceptron suivant:
 
 \paragraph{Perceptron multi-couches}
 Un réseau de neurones multi-couches est constitué d'un vecteur 
-d'entrée $\boldsymbol{x}$ de $i$ composantes $x_i$, d'une ou plusieurs
+d'entrée $\boldsymbol{x}$ de $n$ composantes $x_i$, d'une ou plusieurs
 couches dites cachées et d'une couche de sortie. 
 
 \begin{center}
@@ -285,7 +286,7 @@ Pour la structure de neurones suivante 2-2-1:
     \tikzstyle{hidden neuron}=[neuron, fill=blue!50];
     \tikzstyle{annot} = [text width=4em, text centered]
 
-    \coordinate (O) at (\layersep,-2);
+    \coordinate (O) at (\layersep,-2.25);
     % Draw the input layer nodes
     \foreach \name / \y in {1,...,2}
     % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}

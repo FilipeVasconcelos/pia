@@ -174,7 +174,7 @@ class MCP():
             # ====================
             E = (T - Y[-1] ) / len (Y)   # erreur
             
-            if self.verbeux > 1 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e} ".format( pas,(E**2).sum()) )
+            if self.verbeux > 0 and pas%self.verbe_periode==0 : print ( "{:10d} {:18.6e} ".format( pas,(E**2).sum()) )
 
             # ====================
             #       backprop 
